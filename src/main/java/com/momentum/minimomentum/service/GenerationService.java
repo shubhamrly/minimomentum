@@ -1,24 +1,25 @@
 package com.momentum.minimomentum.service;
 
 
-
-import com.momentum.minimomentum.constant.PromptConstants;
 import com.momentum.minimomentum.constant.PromptType;
 import com.momentum.minimomentum.dto.GenerationResponseDTO;
+import com.momentum.minimomentum.exception.TranscriptNotFoundException;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.prompt.impl.PromptFactory;
-import com.momentum.minimomentum.repository.TranscriptionsRepo;
+import com.momentum.minimomentum.repository.TranscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GenerationService {
         @Autowired
         private  OpenAiClient openAiClient;
         @Autowired
-        private  TranscriptionsRepo transcriptRepository;
+        private TranscriptionRepository transcriptRepository;
         @Autowired
         private PromptFactory promptFactory;
 
@@ -26,18 +27,37 @@ public class GenerationService {
        public GenerationResponseDTO generateTranscript(String language) {
         String prompt = promptFactory.getPrompt(PromptType.GENERATION_PROMPT, language);
         String content = openAiClient.getCompletion(prompt);
-        String transcriptId = createAndSaveTranscripts(content, language);
-        return new GenerationResponseDTO(transcriptId,content);
+           Transcript transcript = createAndSaveTranscripts(content, language);
+           return new GenerationResponseDTO(transcript.getId(), content, language, transcript.getCreatedAt());
     }
 
-    public String createAndSaveTranscripts(String content, String language) {
+    public Transcript createAndSaveTranscripts(String content, String language) {
         Transcript transcript = new Transcript();
         transcript.setLanguage(language);
         transcript.setContent(content);
         transcript.setCreatedAt(LocalDateTime.now());
-        return transcriptRepository.save(transcript).getId();
-        };
+        return transcriptRepository.save(transcript);
+        }
+
+    public GenerationResponseDTO  getTranscript(String id){
+       Transcript transcript = transcriptRepository.findById(id).orElseThrow(() -> new TranscriptNotFoundException("Transcript not found by id: "+ id));
+        return new GenerationResponseDTO(transcript.getId(), transcript.getLanguage(), transcript.getContent(), transcript.getCreatedAt());
     }
+
+    public List<GenerationResponseDTO> getAllTranscripts() {
+        List<Transcript> transcriptList = transcriptRepository.findAll();
+
+        if (transcriptList.isEmpty()) {
+            throw new TranscriptNotFoundException("No transcripts found.");
+        }
+
+        return transcriptList.stream()
+                .map(t -> new GenerationResponseDTO(t.getId(),t.getLanguage(), t.getContent(), t.getCreatedAt()))
+                .collect(Collectors.toList());
+    }
+
+
+}
 
 
 
