@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 public class Transcript {
     @Id
     String id;
+    String transcriptText;
     String language;
-    String content;
     LocalDateTime createdAt;
 
 }

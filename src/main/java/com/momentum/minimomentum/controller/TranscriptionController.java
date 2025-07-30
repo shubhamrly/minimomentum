@@ -18,26 +18,28 @@ public class TranscriptionController {
     @Autowired
     SummaryService summaryService;
 
-    @GetMapping("/generateTranscript")
+    @PostMapping("/generateTranscript")
     public ResponseEntity<TranscriptResponseDTO> generateTranscript(@RequestParam(value = "language", defaultValue = "english") String language) {
         return ResponseEntity.ok(generationService.generateTranscript(language));
 
     }
+
     @GetMapping("/getTranscript/{transcriptId}")
     public ResponseEntity<?> getTranscript(@PathVariable String transcriptId) {
         return ResponseEntity.ok(generationService.getTranscript(transcriptId));
     }
+
     @GetMapping("/getAllTranscripts")
     public ResponseEntity<?> getAllTranscripts() {
         return ResponseEntity.ok(generationService.getAllTranscripts());
     }
 
-    @GetMapping("/summary/{transcriptId}")
+    @PostMapping("/summariser/{transcriptId}")
     public ResponseEntity<SummaryResponseDTO> getSummary(@PathVariable String transcriptId,@RequestParam(value = "language", defaultValue = "english") String language) {
         return ResponseEntity.ok(summaryService.generateSummary(transcriptId,language));
     }
-
-    @GetMapping("/getSummary/{summaryId}")
+    
+    @GetMapping("/getSummaryById/{summaryId}")
     public ResponseEntity<?> getSummaryById(@PathVariable String summaryId) {
         return ResponseEntity.ok(summaryService.getSummary(summaryId));
 

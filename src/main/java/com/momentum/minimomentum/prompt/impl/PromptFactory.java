@@ -13,8 +13,11 @@ public class PromptFactory {
 
     public String getPrompt(PromptType type, String language) throws PromptNotFoundException {
         return switch (type) {
+
             case GENERATION_PROMPT -> generationPrompt(language);
+
             case SUMMARY_PROMPT ->  summaryPrompt(language);
+
             default -> throw new PromptNotFoundException("Unsupported prompt type: " + type);
         };
     }
@@ -23,13 +26,8 @@ public class PromptFactory {
         return String.format(PromptConstants.GENERATION_PROMPT_CONSTANT, language);
     }
     private String summaryPrompt(String language) {
-        log.info("Generating summary prompt for language: {}", language);
 
-        for (char c : PromptConstants.SUMMARY_PROMPT_CONSTANT.toCharArray()) {
-            if (c == '%') System.out.print("%");
-            else if (c == ' ') System.out.print(".");
-            else System.out.print(c);
-        }
+        log.info("Generating summary prompt for language: {}", language);
 
         return String.format(PromptConstants.SUMMARY_PROMPT_CONSTANT, language);
     }

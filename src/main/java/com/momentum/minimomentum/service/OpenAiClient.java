@@ -4,12 +4,12 @@ import com.momentum.minimomentum.constant.PromptConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.http.MediaType;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -48,7 +48,7 @@ public class OpenAiClient {
                         Map.of("role", "user", "content", prompt)
                 )
         );
-
+        long startTime = System.currentTimeMillis();
         String responseOpenAi =  webClient.post()
                 .uri(chatCompletionsUri)
                 .bodyValue(requestBody)
@@ -59,9 +59,9 @@ public class OpenAiClient {
                     if (choicesObj instanceof List<?> choices && !choices.isEmpty()) {
                         Object first = choices.get(0);
                         if (first instanceof Map<?,?> firstMap) {
-                            Object messageObj = ((Map<?,?>) firstMap).get("message");
+                            Object messageObj = firstMap.get("message");
                             if (messageObj instanceof Map<?,?> messageMap) {
-                                Object content = ((Map<?,?>) messageMap).get("content");
+                                Object content = messageMap.get("content");
                                 return content != null ? content.toString() : "";
                             }
                         }
@@ -69,7 +69,9 @@ public class OpenAiClient {
                     return "";
                 })
                 .block();
-        assert responseOpenAi != null;
+         long endtime =  (System.currentTimeMillis() - startTime ) / 1000;
+
+        log.info("OpenAI api call time taken : {} s", endtime);
         log.info("OpenAI response length: {}", responseOpenAi.length());
         return responseOpenAi;
     }

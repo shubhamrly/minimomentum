@@ -14,9 +14,9 @@ public class TranscriptResponseDTO {
 
     private String transcriptId;
 
-    private String language;
+    private String transcriptText ;
 
-    private String content;
+    private String language;
 
     private LocalDateTime createdAt;
 
