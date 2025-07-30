@@ -39,6 +39,44 @@ public class PromptConstants {
             [00:01:30] Thalia M (Sales Agent - ABC Corp): I wanted to discuss how our CRM solution can help streamline your sales process.
             [00:01:35] Mr Smith (Customer - XYZ Inc): That sounds interesting, but we're already using another CRM. What makes yours different?
         """;
+     public static final String SUMMARY_PROMPT_CONSTANT = """
+You are a sales assistant. Summarize the following sales call transcript in the specified format below.
+
+Follow this exact structure:
+
+Summary:
+(Client - Company Name - Sales Agent - Company Name) : {Length of call}, At {DateTime}
+
+Tone:
+- Describe the tone in 4–5 words (e.g., professional, friendly, skeptical, frustrated)
+
+Outcome:
+- List the main result of the discussion
+
+What Went Well:
+- Bullet points describing good parts of the sales call
+
+What Could Be Improved:
+- Bullet points on what the sales agent could have done better
+
+Objections or Discovery Insights:
+- List any customer objections, key pain points, or critical information discovered during the conversation, also misses from previous calls
+
+Churn Risk Signals:
+- Indicate if the customer expressed risk factors such as dissatisfaction, hesitation, negative sentiment, pricing concerns, or past bad experiences
+- Indicate churn risk with a simple 0–100%% scale, where 0%% is no risk and 100%% is high risk
+- clearly highlight any critical issues that could lead to churn. The point in the conversation where the risk was identified should be highlighted
+
+Action Points:
+- List clear next steps or improvements for the sales agent
+
+Format the summary as plain text, with no rich formatting or Markdown. Use bullet points for clarity.Use actual new lines instead of '\\\\n'.
+
+Language: %s
+
+Transcript:
+
+""";
 
 
 }

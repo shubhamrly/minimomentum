@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GenerationResponseDTO {
+public class TranscriptResponseDTO {
 
     private String transcriptId;
 

@@ -2,7 +2,7 @@ package com.momentum.minimomentum.service;
 
 
 import com.momentum.minimomentum.constant.PromptType;
-import com.momentum.minimomentum.dto.GenerationResponseDTO;
+import com.momentum.minimomentum.dto.TranscriptResponseDTO;
 import com.momentum.minimomentum.exception.TranscriptNotFoundException;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.prompt.impl.PromptFactory;
@@ -24,11 +24,11 @@ public class GenerationService {
         private PromptFactory promptFactory;
 
 
-       public GenerationResponseDTO generateTranscript(String language) {
+       public TranscriptResponseDTO generateTranscript(String language) {
         String prompt = promptFactory.getPrompt(PromptType.GENERATION_PROMPT, language);
         String content = openAiClient.getCompletion(prompt);
            Transcript transcript = createAndSaveTranscripts(content, language);
-           return new GenerationResponseDTO(transcript.getId(), content, language, transcript.getCreatedAt());
+           return new TranscriptResponseDTO(transcript.getId(), content, language, transcript.getCreatedAt());
     }
 
     public Transcript createAndSaveTranscripts(String content, String language) {
@@ -39,12 +39,12 @@ public class GenerationService {
         return transcriptRepository.save(transcript);
         }
 
-    public GenerationResponseDTO  getTranscript(String id){
+    public TranscriptResponseDTO  getTranscript(String id){
        Transcript transcript = transcriptRepository.findById(id).orElseThrow(() -> new TranscriptNotFoundException("Transcript not found by id: "+ id));
-        return new GenerationResponseDTO(transcript.getId(), transcript.getLanguage(), transcript.getContent(), transcript.getCreatedAt());
+        return new TranscriptResponseDTO(transcript.getId(), transcript.getLanguage(), transcript.getContent(), transcript.getCreatedAt());
     }
 
-    public List<GenerationResponseDTO> getAllTranscripts() {
+    public List<TranscriptResponseDTO> getAllTranscripts() {
         List<Transcript> transcriptList = transcriptRepository.findAll();
 
         if (transcriptList.isEmpty()) {
@@ -52,7 +52,7 @@ public class GenerationService {
         }
 
         return transcriptList.stream()
-                .map(t -> new GenerationResponseDTO(t.getId(),t.getLanguage(), t.getContent(), t.getCreatedAt()))
+                .map(t -> new TranscriptResponseDTO(t.getId(),t.getLanguage(), t.getContent(), t.getCreatedAt()))
                 .collect(Collectors.toList());
     }
 
