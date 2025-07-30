@@ -1,10 +1,11 @@
 package com.momentum.minimomentum.prompt.impl;
 
+import com.momentum.minimomentum.constant.PromptConstants;
 import com.momentum.minimomentum.constant.PromptType;
 import com.momentum.minimomentum.exception.PromptNotFoundException;
 import org.springframework.stereotype.Component;
 
-import static com.momentum.minimomentum.constant.PromptConstants.GENERATION_PROMPT;
+
 
 @Component
 public class PromptFactory {
@@ -17,7 +18,7 @@ public class PromptFactory {
     }
 
     private String generationPrompt(String language) {
-        return String.format(GENERATION_PROMPT, language);
+        return String.format(PromptConstants.GENERATION_PROMPT_CONSTANT, language);
     }
 
 }

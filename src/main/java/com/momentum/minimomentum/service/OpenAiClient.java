@@ -1,6 +1,8 @@
 package com.momentum.minimomentum.service;
 
+import com.momentum.minimomentum.constant.PromptConstants;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -9,8 +11,7 @@ import org.springframework.http.MediaType;
 import java.util.Map;
 import java.util.List;
 
-import static com.momentum.minimomentum.constant.PromptConstants.SYSTEM_CONTEXT;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpenAiClient {
@@ -43,12 +44,12 @@ public class OpenAiClient {
                 "model", model,
                 "temperature", temperature,
                 "messages", List.of(
-                        Map.of("role", "system", "content", SYSTEM_CONTEXT),
+                        Map.of("role", "system", "content", PromptConstants.SYSTEM_CONTEXT_CONSTANT),
                         Map.of("role", "user", "content", prompt)
                 )
         );
 
-        return webClient.post()
+        String responseOpenAi =  webClient.post()
                 .uri(chatCompletionsUri)
                 .bodyValue(requestBody)
                 .retrieve()
@@ -68,5 +69,8 @@ public class OpenAiClient {
                     return "";
                 })
                 .block();
+        assert responseOpenAi != null;
+        log.info("OpenAI response length: {}", responseOpenAi.length());
+        return responseOpenAi;
     }
 }

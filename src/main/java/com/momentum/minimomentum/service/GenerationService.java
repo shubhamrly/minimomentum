@@ -2,6 +2,7 @@ package com.momentum.minimomentum.service;
 
 
 
+import com.momentum.minimomentum.constant.PromptConstants;
 import com.momentum.minimomentum.constant.PromptType;
 import com.momentum.minimomentum.dto.GenerationResponseDTO;
 import com.momentum.minimomentum.model.Transcript;

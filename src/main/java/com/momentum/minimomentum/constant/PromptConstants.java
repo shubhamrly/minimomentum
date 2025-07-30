@@ -1,7 +1,7 @@
 package com.momentum.minimomentum.constant;
 
 public class PromptConstants {
-    public static final String SYSTEM_CONTEXT = """
+    public static final String SYSTEM_CONTEXT_CONSTANT = """
         You are an AI assistant that generates realistic sales call transcripts and performs analysis.
         For any user request, follow these rules:
         1. Generate a realistic mock sales call transcript based on the user's input.
@@ -18,7 +18,7 @@ public class PromptConstants {
            - Highlight important and relevant parts from the conversation
         """;
 
-     public static final String GENERATION_PROMPT = """
+     public static final String GENERATION_PROMPT_CONSTANT = """
             Generate a realistic mock sales call transcript.
             - Choose any believable product or service (e.g., CRM, HR software, AI assistant, SaaS tool)
             - Include timestamps in [HH:MM:SS] format
