@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class GenerationResponseDTO {
-    private String generationID;
+    private String transcriptId;
     private String content;
 }

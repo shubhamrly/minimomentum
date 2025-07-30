@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import java.util.Map;
 import java.util.List;
 
+import static com.momentum.minimomentum.constant.PromptConstants.SYSTEM_CONTEXT;
+
 @Service
 @RequiredArgsConstructor
 public class OpenAiClient {
@@ -41,6 +43,7 @@ public class OpenAiClient {
                 "model", model,
                 "temperature", temperature,
                 "messages", List.of(
+                        Map.of("role", "system", "content", SYSTEM_CONTEXT),
                         Map.of("role", "user", "content", prompt)
                 )
         );
