@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SummaryResponseDTO {
     private String summaryId;
-    private String summary;
+    private SummaryDetailsDTO summary;
     private String transcriptId;
     private String language;
 

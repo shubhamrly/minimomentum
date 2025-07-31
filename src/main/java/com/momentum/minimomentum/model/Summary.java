@@ -1,5 +1,6 @@
 package com.momentum.minimomentum.model;
 
+import com.momentum.minimomentum.dto.SummaryDetailsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Summary {
     @Id
     private String id;
-    private String summary;
+    private SummaryDetailsDTO summary;
     private String transcriptId;
     private String language;
 }

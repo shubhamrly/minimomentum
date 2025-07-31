@@ -1,6 +1,8 @@
 package com.momentum.minimomentum.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.momentum.minimomentum.constant.PromptType;
+import com.momentum.minimomentum.dto.SummaryDetailsDTO;
 import com.momentum.minimomentum.dto.SummaryResponseDTO;
 import com.momentum.minimomentum.dto.TranscriptResponseDTO;
 import com.momentum.minimomentum.exception.SummaryNotFoundException;
@@ -20,6 +22,8 @@ public class SummaryService {
     private OpenAiClient openAiClient;
     @Autowired
     private SummaryRepository summaryRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public SummaryResponseDTO generateSummary(String transcriptId, String language) {
         TranscriptResponseDTO transcript = generationService.getTranscript(transcriptId);
@@ -30,17 +34,22 @@ public class SummaryService {
     }
 
     private Summary saveOrUpdateSummary(String content, String transcriptId, String language) {
-
+        SummaryDetailsDTO summaryDetails;
+        try {
+            summaryDetails = objectMapper.readValue(content, SummaryDetailsDTO.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse summary content to DTO", e);
+        }
         Summary summary = summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
                 .map(existingSummary -> {
-                    existingSummary.setSummary(content);
+                    existingSummary.setSummary(summaryDetails);
                     return existingSummary;
                 })
                 .orElseGet(() -> {
                     Summary newSummary = new Summary();
                     newSummary.setTranscriptId(transcriptId);
                     newSummary.setLanguage(language);
-                    newSummary.setSummary(content);
+                    newSummary.setSummary(summaryDetails);
                     return newSummary;
                 });
 
