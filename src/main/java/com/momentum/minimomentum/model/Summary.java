@@ -1,6 +1,6 @@
 package com.momentum.minimomentum.model;
 
-import com.momentum.minimomentum.dto.SummaryDetailsDTO;
+import com.momentum.minimomentum.dto.responseDTO.SummaryDetailsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,17 +1,18 @@
 package com.momentum.minimomentum.service;
 
 import com.momentum.minimomentum.constant.PromptType;
+import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.QuestionAnswer;
-import com.momentum.minimomentum.prompt.impl.PromptFactory;
 import com.momentum.minimomentum.repository.QuestionAnswersRepository;
+import com.momentum.minimomentum.service.openAi.OpenAiClient;
+import com.momentum.minimomentum.utils.PromptUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+
 @Slf4j
 @Service
 public class QuestionAnswerService {
@@ -20,24 +21,37 @@ public class QuestionAnswerService {
     @Autowired
     QuestionAnswersRepository questionAnswersRepository;
     @Autowired
-    PromptFactory promptFactory;
-    @Autowired
     OpenAiClient openAiClient;
 
-    public String getAnswersByTranscriptId(String transcriptId,String question) {
+    public String getAnswersByTranscriptId(String transcriptId, String question) {
 
         String transcriptText = generationService.getTranscript(transcriptId).getTranscriptText();
 
-        String prompt = promptFactory.getPrompt(PromptType.QUESTION_ANSWERING_PROMPT, "english")+" \n\n " + "transcript :" + transcriptText + "    Question and Answer History sorted by latest first: " + getAllQAByTranscriptId(transcriptId)+ "\n\n" + " Question: " + question;
+        String prompt = PromptUtils.getPrompt(PromptType.QUESTION_ANSWERING_PROMPT, "english");
+        String promptWithHistory = String.format("""
+                        %s
+                        transcript: %s
+                        Question and Answer History sorted by latest first: %s
+                        
+                        Question: %s
+                        """,
+                prompt,
+                transcriptText,
+                getAllQAByTranscriptId(transcriptId),
+                question
+        );
 
-        String content = openAiClient.getCompletion(prompt);
+        String content = openAiClient.getCompletion(promptWithHistory);
         log.info(" QuestionAnswerService || Prompt length : {}  and response length {}", prompt.length(), content.length());
         return createAndSaveQuestionAnswer(transcriptId, question, content).getAnswer();
     }
 
     public List<QuestionAnswer> getAllQAByTranscriptId(String transcriptId) {
-        return Optional.ofNullable(questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(transcriptId))
-                .orElse(Collections.emptyList());
+        List<QuestionAnswer> questionAnswers = questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(transcriptId);
+        if (questionAnswers.isEmpty()) {
+            throw new EntityNotFoundException("No question answers found for transcriptId: " + transcriptId);
+        }
+        return questionAnswers;
     }
 
     public QuestionAnswer createAndSaveQuestionAnswer(String transcriptId, String question, String answer) {

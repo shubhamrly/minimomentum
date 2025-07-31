@@ -1,6 +1,6 @@
 package com.momentum.minimomentum.controller;
 
-import com.momentum.minimomentum.dto.TranscriptResponseDTO;
+import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
 import com.momentum.minimomentum.service.GenerationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

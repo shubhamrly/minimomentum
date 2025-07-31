@@ -2,12 +2,13 @@ package com.momentum.minimomentum.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.momentum.minimomentum.constant.PromptType;
-import com.momentum.minimomentum.dto.SummaryDetailsDTO;
-import com.momentum.minimomentum.dto.SummaryResponseDTO;
-import com.momentum.minimomentum.dto.TranscriptResponseDTO;
-import com.momentum.minimomentum.exception.SummaryNotFoundException;
+import com.momentum.minimomentum.dto.responseDTO.SummaryDetailsDTO;
+import com.momentum.minimomentum.dto.responseDTO.SummaryResponseDTO;
+import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
+import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.Summary;
 import com.momentum.minimomentum.repository.SummaryRepository;
+import com.momentum.minimomentum.service.openAi.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,14 +59,14 @@ public class SummaryService {
 
 
     public SummaryResponseDTO getSummary(String summaryId) {
-        Summary summary = summaryRepository.findById(summaryId).orElseThrow(() -> new SummaryNotFoundException("Summary not found by id: " + summaryId));
+        Summary summary = summaryRepository.findById(summaryId).orElseThrow(() -> new EntityNotFoundException("Summary not found by id: " + summaryId));
         return new SummaryResponseDTO(summary.getId(), summary.getSummary(), summary.getTranscriptId(), summary.getLanguage());
     }
 
     public List<SummaryResponseDTO> getAllSummaries() {
         List<Summary> summaryList = summaryRepository.findAll();
         if (summaryList.isEmpty()) {
-            throw new SummaryNotFoundException("No summaries found.");
+            throw new EntityNotFoundException("No summaries found.");
         }
         return summaryList.stream()
                 .map(s -> new SummaryResponseDTO(s.getId(), s.getSummary(), s.getTranscriptId(), s.getLanguage()))
