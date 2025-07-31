@@ -49,7 +49,7 @@ public class OpenAiClient {
                 )
         );
         long startTime = System.currentTimeMillis();
-        String responseOpenAi =  webClient.post()
+        String responseOpenAi = webClient.post()
                 .uri(chatCompletionsUri)
                 .bodyValue(requestBody)
                 .retrieve()
@@ -58,9 +58,9 @@ public class OpenAiClient {
                     Object choicesObj = response.get("choices");
                     if (choicesObj instanceof List<?> choices && !choices.isEmpty()) {
                         Object first = choices.get(0);
-                        if (first instanceof Map<?,?> firstMap) {
+                        if (first instanceof Map<?, ?> firstMap) {
                             Object messageObj = firstMap.get("message");
-                            if (messageObj instanceof Map<?,?> messageMap) {
+                            if (messageObj instanceof Map<?, ?> messageMap) {
                                 Object content = messageMap.get("content");
                                 return content != null ? content.toString() : "";
                             }
@@ -69,10 +69,10 @@ public class OpenAiClient {
                     return "";
                 })
                 .block();
-         long endtime =  (System.currentTimeMillis() - startTime ) / 1000;
-
+        long endtime = (System.currentTimeMillis() - startTime) / 1000;
+        String formattedResponseOpenAi = responseOpenAi.replace("\\n", System.lineSeparator());
         log.info("OpenAI api call time taken : {} s", endtime);
         log.info("OpenAI response length: {}", responseOpenAi.length());
-        return responseOpenAi;
+        return formattedResponseOpenAi;
     }
 }

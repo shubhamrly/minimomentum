@@ -24,7 +24,7 @@ public class TranscriptionController {
 
     }
 
-    @GetMapping("/getTranscript/{transcriptId}")
+    @GetMapping("/getTranscriptById/{transcriptId}")
     public ResponseEntity<?> getTranscript(@PathVariable String transcriptId) {
         return ResponseEntity.ok(generationService.getTranscript(transcriptId));
     }
@@ -34,11 +34,11 @@ public class TranscriptionController {
         return ResponseEntity.ok(generationService.getAllTranscripts());
     }
 
-    @PostMapping("/summariser/{transcriptId}")
+    @PostMapping("/summariserById/{transcriptId}")
     public ResponseEntity<SummaryResponseDTO> getSummary(@PathVariable String transcriptId,@RequestParam(value = "language", defaultValue = "english") String language) {
         return ResponseEntity.ok(summaryService.generateSummary(transcriptId,language));
     }
-    
+
     @GetMapping("/getSummaryById/{summaryId}")
     public ResponseEntity<?> getSummaryById(@PathVariable String summaryId) {
         return ResponseEntity.ok(summaryService.getSummary(summaryId));
