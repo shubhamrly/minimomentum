@@ -1,7 +1,7 @@
-package com.momentum.minimomentum.service;
+package com.momentum.minimomentum.service.openAi;
 
 import com.momentum.minimomentum.constant.PromptConstants;
-import com.momentum.minimomentum.dto.ChatResponseDTO;
+import com.momentum.minimomentum.service.openAi.dto.ChatResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

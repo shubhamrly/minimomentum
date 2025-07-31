@@ -1,4 +1,4 @@
-package com.momentum.minimomentum.dto;
+package com.momentum.minimomentum.service.openAi.dto;
 
 import lombok.Data;
 
