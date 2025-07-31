@@ -57,11 +57,11 @@ public class PromptConstants {
               },
               \\"ActionPoints\\": [ \\"Next steps or tasks\\" ]
             }
-            
+            Summary Fomatting rules:
             Reply only with JSON. Be dense and insight-rich.
             - Do not escape newlines. Output should include actual line breaks between entries, not '\\n'. Output must be plain text.
+            - Language: %s  should always be followed and given priority for returning complete response of json including key and value fields, If the language is not supported, use English.
             
-            Language: %s
             
             Transcript:
             """;
