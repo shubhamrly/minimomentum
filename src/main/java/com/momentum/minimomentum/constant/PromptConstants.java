@@ -32,6 +32,7 @@ public class PromptConstants {
                 - Each line should start with a timestamp in [HH:MM:SS] Speaker (Role - Company): Dialogue
                 - Add a single **blank line** between each line of dialogue to improve readability
                 - Do not add any rich text formatting; the output should be plain text
+                - Do not escape newlines. Output should include actual line breaks between entries, not '\\n'. Output must be plain text.
                 - Language: %s
                  Transcript formatting example:
                 [00:01:23] Thalia M  (Sales Agent - ABC Corp): Hi, this is Thalia M from ABC Corp. How are you today?
@@ -44,7 +45,7 @@ public class PromptConstants {
             You are a sales assistant. Summarize the sales call transcript in compact JSON.
             Use few words per field. No extra text or markdown. Stick to this format:
             {
-              \\"Summary\\": \\"(Client - <ClientCompany> - Sales Agent - <AgentCompany>) : <CallDuration>\\",
+              \\"Summary\\": \\"(Client - <ClientCompany> - Sales Agent - <AgentCompany>) : CallDuration: <CallDuration>\\",
               \\"Tone\\": \\"<4-5 words>\\",
               \\"Outcome\\": \\"<Main result>\\",
               \\"WhatWentWell\\": [ \\"Short positive bullets\\" ],
@@ -58,6 +59,7 @@ public class PromptConstants {
             }
             
             Reply only with JSON. Be dense and insight-rich.
+            - Do not escape newlines. Output should include actual line breaks between entries, not '\\n'. Output must be plain text.
             
             Language: %s
             
