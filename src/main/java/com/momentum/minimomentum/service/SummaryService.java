@@ -25,13 +25,14 @@ public class SummaryService {
 
     public SummaryResponseDTO generateSummary(String transcriptId,String language) {
         TranscriptResponseDTO transcript = generationService.getTranscript(transcriptId);
-        String prompt = promptFactory.getPrompt(PromptType.SUMMARY_PROMPT, language) +" \n\n " + transcript.getContent();
+        String prompt = promptFactory.getPrompt(PromptType.SUMMARY_PROMPT, language) +" \n\n " + transcript.getTranscriptText();
         String content = openAiClient.getCompletion(prompt);
         Summary summary = saveOrUpdateSummary(content,transcriptId,language);
         return new SummaryResponseDTO(summary.getId(), summary.getSummary(), summary.getTranscriptId(), summary.getLanguage());
         }
 
     private Summary saveOrUpdateSummary(String content, String transcriptId, String language) {
+
         Summary summary = summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
                 .map(existingSummary -> {
                     existingSummary.setSummary(content);

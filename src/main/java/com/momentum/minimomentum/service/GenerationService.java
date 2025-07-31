@@ -34,14 +34,14 @@ public class GenerationService {
     public Transcript createAndSaveTranscripts(String content, String language) {
         Transcript transcript = new Transcript();
         transcript.setLanguage(language);
-        transcript.setContent(content);
+        transcript.setTranscriptText(content);
         transcript.setCreatedAt(LocalDateTime.now());
         return transcriptRepository.save(transcript);
         }
 
     public TranscriptResponseDTO  getTranscript(String id){
        Transcript transcript = transcriptRepository.findById(id).orElseThrow(() -> new TranscriptNotFoundException("Transcript not found by id: "+ id));
-        return new TranscriptResponseDTO(transcript.getId(), transcript.getLanguage(), transcript.getContent(), transcript.getCreatedAt());
+        return new TranscriptResponseDTO(transcript.getId(),transcript.getTranscriptText(), transcript.getLanguage(),  transcript.getCreatedAt());
     }
 
     public List<TranscriptResponseDTO> getAllTranscripts() {
@@ -52,7 +52,7 @@ public class GenerationService {
         }
 
         return transcriptList.stream()
-                .map(t -> new TranscriptResponseDTO(t.getId(),t.getLanguage(), t.getContent(), t.getCreatedAt()))
+                .map(t -> new TranscriptResponseDTO(t.getId(),t.getLanguage(), t.getTranscriptText(), t.getCreatedAt()))
                 .collect(Collectors.toList());
     }
 
