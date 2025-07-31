@@ -23,7 +23,7 @@ public class QuestionAnswer {
     private String question;
     private String answer;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createDateTime;
 
 }
 
