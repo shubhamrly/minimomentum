@@ -18,6 +18,8 @@ public class PromptFactory {
 
             case SUMMARY_PROMPT ->  summaryPrompt(language);
 
+            case QUESTION_ANSWERING_PROMPT -> questionAnsweringPrompt(language);
+
             default -> throw new PromptNotFoundException("Unsupported prompt type: " + type);
         };
     }
@@ -27,10 +29,10 @@ public class PromptFactory {
     }
     private String summaryPrompt(String language) {
 
-        log.info("Generating summary prompt for language: {}", language);
-
         return String.format(PromptConstants.SUMMARY_PROMPT_CONSTANT, language);
     }
-
+    private String questionAnsweringPrompt(String language) {
+        return String.format(PromptConstants.QUESTION_ANSWERING_PROMPT_CONSTANT);
+    }
 
 }
