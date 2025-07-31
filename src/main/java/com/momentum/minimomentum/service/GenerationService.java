@@ -2,10 +2,11 @@ package com.momentum.minimomentum.service;
 
 
 import com.momentum.minimomentum.constant.PromptType;
-import com.momentum.minimomentum.dto.TranscriptResponseDTO;
-import com.momentum.minimomentum.exception.TranscriptNotFoundException;
+import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
+import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.TranscriptionRepository;
+import com.momentum.minimomentum.service.openAi.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class GenerationService {
     }
 
     public TranscriptResponseDTO getTranscript(String id) {
-        Transcript transcript = transcriptRepository.findById(id).orElseThrow(() -> new TranscriptNotFoundException("Transcript not found by id: " + id));
+        Transcript transcript = transcriptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
         return new TranscriptResponseDTO(transcript.getId(), transcript.getTranscriptText(), transcript.getLanguage(), transcript.getCreatedAt());
     }
 
@@ -46,7 +47,7 @@ public class GenerationService {
         List<Transcript> transcriptList = transcriptRepository.findAll();
 
         if (transcriptList.isEmpty()) {
-            throw new TranscriptNotFoundException("No transcripts found.");
+            throw new EntityNotFoundException("No transcripts found.");
         }
 
         return transcriptList.stream()

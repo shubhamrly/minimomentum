@@ -1,6 +1,6 @@
 package com.momentum.minimomentum.controller;
 
-import com.momentum.minimomentum.dto.SummaryResponseDTO;
+import com.momentum.minimomentum.dto.responseDTO.SummaryResponseDTO;
 import com.momentum.minimomentum.service.SummaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

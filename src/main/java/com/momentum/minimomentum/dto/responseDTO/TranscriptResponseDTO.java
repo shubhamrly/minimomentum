@@ -1,4 +1,4 @@
-package com.momentum.minimomentum.dto;
+package com.momentum.minimomentum.dto.responseDTO;
 
 
 import lombok.AllArgsConstructor;

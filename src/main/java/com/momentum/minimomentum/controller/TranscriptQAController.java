@@ -1,6 +1,6 @@
 package com.momentum.minimomentum.controller;
 
-import com.momentum.minimomentum.dto.TranscriptQAResponseDTO;
+import com.momentum.minimomentum.dto.responseDTO.TranscriptQAResponseDTO;
 import com.momentum.minimomentum.dto.requestDTO.TranscriptQARequestDTO;
 import com.momentum.minimomentum.service.QuestionAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
