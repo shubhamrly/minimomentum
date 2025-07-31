@@ -1,31 +1,31 @@
 package com.momentum.minimomentum.advice;
 
+import com.momentum.minimomentum.exception.EntityNotFoundException;
+import com.momentum.minimomentum.exception.OpenAiException;
 import com.momentum.minimomentum.exception.PromptNotFoundException;
-import com.momentum.minimomentum.exception.SummaryNotFoundException;
-import com.momentum.minimomentum.exception.TranscriptNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalControllerAdvice {
-    @ExceptionHandler(PromptNotFoundException.class)
+    @ExceptionHandler({PromptNotFoundException.class, OpenAiException.class})
     public ResponseEntity<String> handlePromptNotFoundException(Exception e) {
         return ResponseEntity
-                .badRequest()
+                .internalServerError()
                 .body("Prompt not found: " + e.getMessage());
     }
-    @ExceptionHandler(SummaryNotFoundException.class)
-    public ResponseEntity<String> handleSummaryNotFoundException(Exception e) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
         return ResponseEntity
-                .badRequest()
-                .body("Summary not found: " + e.getMessage());
+                .internalServerError()
+                .body("An unexpected error occurred: " + e.getMessage());
     }
 
-    @ExceptionHandler(TranscriptNotFoundException.class)
-    public ResponseEntity<String> handleTranscriptNotFoundException(Exception e) {
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException e) {
         return ResponseEntity
-                .badRequest()
-                .body("Transcript not found: " + e.getMessage());
+                .notFound()
+                .build();
     }
 }
