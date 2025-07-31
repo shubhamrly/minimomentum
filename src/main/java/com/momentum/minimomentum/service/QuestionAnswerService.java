@@ -27,11 +27,11 @@ public class QuestionAnswerService {
     public String getAnswersByTranscriptId(String transcriptId,String question) {
 
         String transcriptText = generationService.getTranscript(transcriptId).getTranscriptText();
-        log.info("Transcript text for ID {}: {}", transcriptId, transcriptText);
-        String prompt = promptFactory.getPrompt(PromptType.QUESTION_ANSWERING_PROMPT, "english")+" \n\n " + "transcript :" + transcriptText + "    Question and Answer History sorted by latest first: " + getAllQAByTranscriptId(transcriptId)+ "\n\n" + " Question: " + question;
-        log.info("Generated prompt for question answering: {}", prompt);
-        String content = openAiClient.getCompletion(prompt);
 
+        String prompt = promptFactory.getPrompt(PromptType.QUESTION_ANSWERING_PROMPT, "english")+" \n\n " + "transcript :" + transcriptText + "    Question and Answer History sorted by latest first: " + getAllQAByTranscriptId(transcriptId)+ "\n\n" + " Question: " + question;
+
+        String content = openAiClient.getCompletion(prompt);
+        log.info(" QuestionAnswerService || Prompt length : {}  and response length {}", prompt.length(), content.length());
         return createAndSaveQuestionAnswer(transcriptId, question, content).getAnswer();
     }
 

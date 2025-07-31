@@ -5,8 +5,8 @@ import com.momentum.minimomentum.dto.SummaryResponseDTO;
 import com.momentum.minimomentum.dto.TranscriptResponseDTO;
 import com.momentum.minimomentum.exception.SummaryNotFoundException;
 import com.momentum.minimomentum.model.Summary;
-import com.momentum.minimomentum.prompt.impl.PromptFactory;
 import com.momentum.minimomentum.repository.SummaryRepository;
+import com.momentum.minimomentum.utils.PromptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +17,17 @@ public class SummaryService {
     @Autowired
     GenerationService generationService;
     @Autowired
-    private PromptFactory promptFactory;
-    @Autowired
-    private  OpenAiClient openAiClient;
+    private OpenAiClient openAiClient;
     @Autowired
     private SummaryRepository summaryRepository;
 
-    public SummaryResponseDTO generateSummary(String transcriptId,String language) {
+    public SummaryResponseDTO generateSummary(String transcriptId, String language) {
         TranscriptResponseDTO transcript = generationService.getTranscript(transcriptId);
-        String prompt = promptFactory.getPrompt(PromptType.SUMMARY_PROMPT, language) +" \n\n " + transcript.getTranscriptText();
+        String prompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + " \n\n " + transcript.getTranscriptText();
         String content = openAiClient.getCompletion(prompt);
-        Summary summary = saveOrUpdateSummary(content,transcriptId,language);
+        Summary summary = saveOrUpdateSummary(content, transcriptId, language);
         return new SummaryResponseDTO(summary.getId(), summary.getSummary(), summary.getTranscriptId(), summary.getLanguage());
-        }
+    }
 
     private Summary saveOrUpdateSummary(String content, String transcriptId, String language) {
 
@@ -50,7 +48,6 @@ public class SummaryService {
     }
 
 
-
     public SummaryResponseDTO getSummary(String summaryId) {
         Summary summary = summaryRepository.findById(summaryId).orElseThrow(() -> new SummaryNotFoundException("Summary not found by id: " + summaryId));
         return new SummaryResponseDTO(summary.getId(), summary.getSummary(), summary.getTranscriptId(), summary.getLanguage());
@@ -62,7 +59,7 @@ public class SummaryService {
             throw new SummaryNotFoundException("No summaries found.");
         }
         return summaryList.stream()
-                .map(s -> new SummaryResponseDTO(s.getId(), s.getSummary(), s.getTranscriptId() ,s.getLanguage()))
+                .map(s -> new SummaryResponseDTO(s.getId(), s.getSummary(), s.getTranscriptId(), s.getLanguage()))
                 .toList();
     }
 }
