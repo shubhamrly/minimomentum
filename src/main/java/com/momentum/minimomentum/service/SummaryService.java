@@ -53,7 +53,7 @@ public class SummaryService {
 
     public SummaryResponseDTO getSummary(String summaryId) {
         Summary summary = summaryRepository.findById(summaryId).orElseThrow(() -> new SummaryNotFoundException("Summary not found by id: " + summaryId));
-        return new SummaryResponseDTO(summary.getId(), summary.getSummary(), summary.getLanguage(), summary.getTranscriptId());
+        return new SummaryResponseDTO(summary.getId(), summary.getSummary(), summary.getTranscriptId(), summary.getLanguage());
     }
 
     public List<SummaryResponseDTO> getAllSummaries() {
@@ -62,7 +62,7 @@ public class SummaryService {
             throw new SummaryNotFoundException("No summaries found.");
         }
         return summaryList.stream()
-                .map(s -> new SummaryResponseDTO(s.getId(), s.getSummary(), s.getLanguage(), s.getTranscriptId()))
+                .map(s -> new SummaryResponseDTO(s.getId(), s.getSummary(), s.getTranscriptId() ,s.getLanguage()))
                 .toList();
     }
 }

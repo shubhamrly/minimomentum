@@ -1,9 +1,7 @@
 package com.momentum.minimomentum.controller;
 
 import com.momentum.minimomentum.dto.TranscriptResponseDTO;
-import com.momentum.minimomentum.dto.SummaryResponseDTO;
 import com.momentum.minimomentum.service.GenerationService;
-import com.momentum.minimomentum.service.SummaryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class TranscriptionController {
     @Autowired
     GenerationService generationService;
-    @Autowired
-    SummaryService summaryService;
+
 
     @PostMapping("/generateTranscript")
     public ResponseEntity<TranscriptResponseDTO> generateTranscript(@RequestParam(value = "language", defaultValue = "english") String language) {
@@ -34,20 +31,7 @@ public class TranscriptionController {
         return ResponseEntity.ok(generationService.getAllTranscripts());
     }
 
-    @PostMapping("/summariserById/{transcriptId}")
-    public ResponseEntity<SummaryResponseDTO> getSummary(@PathVariable String transcriptId,@RequestParam(value = "language", defaultValue = "english") String language) {
-        return ResponseEntity.ok(summaryService.generateSummary(transcriptId,language));
-    }
 
-    @GetMapping("/getSummaryById/{summaryId}")
-    public ResponseEntity<?> getSummaryById(@PathVariable String summaryId) {
-        return ResponseEntity.ok(summaryService.getSummary(summaryId));
-
-    }
-    @GetMapping("/getAllSummaries")
-    public ResponseEntity<?> getAllSummaries() {
-        return ResponseEntity.ok(summaryService.getAllSummaries());
-    }
 
 
 }

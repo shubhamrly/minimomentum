@@ -52,7 +52,7 @@ public class GenerationService {
         }
 
         return transcriptList.stream()
-                .map(t -> new TranscriptResponseDTO(t.getId(),t.getLanguage(), t.getTranscriptText(), t.getCreatedAt()))
+                .map(t -> new TranscriptResponseDTO(t.getId(), t.getTranscriptText(), t.getLanguage(),t.getCreatedAt()))
                 .collect(Collectors.toList());
     }
 
