@@ -3,6 +3,7 @@ package com.momentum.minimomentum.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.momentum.minimomentum.constant.PromptType;
+import com.momentum.minimomentum.dto.responseDTO.SummaryDTO;
 import com.momentum.minimomentum.dto.responseDTO.SummaryDetailsDTO;
 import com.momentum.minimomentum.dto.responseDTO.SummaryResponseDTO;
 import com.momentum.minimomentum.exception.EntityNotFoundException;
@@ -19,8 +20,9 @@ import java.util.List;
 
 @Service
 public class SummaryService {
+
     @Autowired
-    TranscriptionService generationService;
+    private TranscriptionService generationService;
     @Autowired
     private OpenAiClient openAiClient;
     @Autowired
@@ -28,42 +30,43 @@ public class SummaryService {
     @Autowired
     private ObjectMapper objectMapper;
 
-
-    public SummaryResponseDTO generateSummary(String transcriptId, String language) throws JsonProcessingException {
-        Transcript transcript = generationService.getTranscriptById(Long.valueOf(transcriptId));
-        String prompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + " \n\n " + transcript.getTranscriptText();
+    public SummaryResponseDTO generateSummary(Long transcriptId, String language) throws JsonProcessingException {
+        Transcript transcript = generationService.getTranscriptById(transcriptId);
+        String prompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + "\n\n" + transcript.getTranscriptText();
         String content = openAiClient.getCompletion(prompt);
 
-
         Summary summary = saveOrUpdateSummary(content, transcriptId, language);
-
         return convertToSummaryResponseDTO(summary);
     }
 
-    private Summary saveOrUpdateSummary(String content, String transcriptId, String language) throws JsonProcessingException {
-        SummaryDetailsDTO summaryDetailsDTO = objectMapper.readValue(content, SummaryDetailsDTO.class);
+    private Summary saveOrUpdateSummary(String content, Long transcriptId, String language) throws JsonProcessingException {
+        SummaryDTO wrapper = objectMapper.readValue(content, SummaryDTO.class);
 
-        SummaryDetails summaryDetails = toSummaryDetailsEntity(summaryDetailsDTO);
-        Summary summary = summaryRepository.findByTranscriptIdAndLanguage(Long.valueOf(transcriptId), language)
-                .map(existingSummary -> {
-                    existingSummary.setSummary(summaryDetails);
-                    return existingSummary;
+        String summaryText = wrapper.getSummary();
+        SummaryDetails summaryDetails = toSummaryDetailsEntity(wrapper.getSummaryDetails());
+
+        return summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
+                .map(existing -> {
+                    existing.setSummaryText(summaryText);
+                    existing.setSummaryDetails(summaryDetails);
+                    return existing;
                 })
                 .orElseGet(() -> {
                     Summary newSummary = new Summary();
-                    Transcript transcript = generationService.getTranscriptById(Long.valueOf(transcriptId)); // Add this method in service
+                    Transcript transcript = generationService.getTranscriptById(transcriptId);
                     newSummary.setTranscript(transcript);
                     newSummary.setLanguage(language);
-                    newSummary.setSummary(summaryDetails);
+                    newSummary.setSummaryText(summaryText);
+                    newSummary.setSummaryDetails(summaryDetails);
                     return newSummary;
                 });
-
-        return summaryRepository.save(summary);
     }
 
 
-    public SummaryResponseDTO getSummary(String summaryId) {
-        Summary summary = summaryRepository.findById(Long.valueOf(summaryId)).orElseThrow(() -> new EntityNotFoundException("Summary not found by id: " + summaryId));
+
+    public SummaryResponseDTO getSummary(Long summaryId) {
+        Summary summary = summaryRepository.findById(summaryId)
+                .orElseThrow(() -> new EntityNotFoundException("Summary not found by id: " + summaryId));
         return convertToSummaryResponseDTO(summary);
     }
 
@@ -78,26 +81,32 @@ public class SummaryService {
     }
 
     private SummaryResponseDTO convertToSummaryResponseDTO(Summary summary) {
-        SummaryDetailsDTO summaryDTO = toSummaryDetailsDto(summary.getSummary());
+
+        SummaryDetailsDTO summaryDetailsDTO = toSummaryDetailsDto(summary.getSummaryDetails());
+
         return new SummaryResponseDTO(
                 summary.getId(),
-                summaryDTO,
+                summary.getSummaryText(),
+                summaryDetailsDTO,
                 summary.getTranscript().getId().toString(),
                 summary.getLanguage()
         );
+
     }
+
 
     private SummaryDetailsDTO toSummaryDetailsDto(SummaryDetails entity) {
         if (entity == null) return null;
 
         SummaryDetailsDTO dto = new SummaryDetailsDTO();
-        dto.setSummary(entity.getSummary());
         dto.setTone(entity.getTone());
         dto.setOutcome(entity.getOutcome());
         dto.setWhatWentWell(entity.getWhatWentWell());
         dto.setWhatCouldBeImproved(entity.getWhatCouldBeImproved());
         dto.setObjectionsOrDiscoveryInsights(entity.getObjectionsOrDiscoveryInsights());
         dto.setActionPoints(entity.getActionPoints());
+        dto.setAgent(entity.getAgent());
+        dto.setCustomer(entity.getCustomer());
 
         if (entity.getChurnRiskSignals() != null) {
             SummaryDetailsDTO.ChurnRiskSignalsDTO crsDto = new SummaryDetailsDTO.ChurnRiskSignalsDTO();
@@ -109,17 +118,19 @@ public class SummaryService {
         return dto;
     }
 
+
     private SummaryDetails toSummaryDetailsEntity(SummaryDetailsDTO dto) {
         if (dto == null) return null;
 
         SummaryDetails entity = new SummaryDetails();
-        entity.setSummary(dto.getSummary());
         entity.setTone(dto.getTone());
         entity.setOutcome(dto.getOutcome());
         entity.setWhatWentWell(dto.getWhatWentWell());
         entity.setWhatCouldBeImproved(dto.getWhatCouldBeImproved());
         entity.setObjectionsOrDiscoveryInsights(dto.getObjectionsOrDiscoveryInsights());
         entity.setActionPoints(dto.getActionPoints());
+        entity.setAgent(dto.getAgent());
+        entity.setCustomer(dto.getCustomer());
 
         if (dto.getChurnRiskSignals() != null) {
             SummaryDetails.ChurnRiskSignals crs = new SummaryDetails.ChurnRiskSignals();
@@ -130,8 +141,4 @@ public class SummaryService {
 
         return entity;
     }
-
-
-
-
 }

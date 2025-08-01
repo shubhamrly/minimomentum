@@ -6,13 +6,16 @@ import jakarta.persistence.Embedded;
 import lombok.Data;
 
 import java.util.List;
+
 @Data
 @Embeddable
 public class SummaryDetails {
 
-    private String summary;
+
     private String tone;
     private String outcome;
+    private String agent;
+    private String customer;
 
     @ElementCollection
     private List<String> whatWentWell;

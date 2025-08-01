@@ -29,6 +29,4 @@ server:
 
 logging:
   level:
-    org.springframework.web: INFO
-    org.springframework.data.mongodb: INFO
-    org.mongodb.driver: INFO
+    com.momentum.minimomentum: DEBUG

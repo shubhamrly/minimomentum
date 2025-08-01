@@ -38,7 +38,7 @@ public class QuestionAnswerService {
                         """,
                 prompt,
                 transcriptText,
-                getAllQAByTranscriptId(transcriptId),
+                getAllQAByTranscriptIdInternal(transcriptId),
                 question
         );
 
@@ -47,9 +47,14 @@ public class QuestionAnswerService {
         return createAndSaveQuestionAnswer(transcriptId, question, content).getAnswer();
     }
 
+    public List<QuestionAnswer> getAllQAByTranscriptIdInternal(Long transcriptId) {
+        return questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(transcriptId);
+    }
+
     public List<QuestionAnswer> getAllQAByTranscriptId(Long transcriptId) {
-        List<QuestionAnswer> questionAnswers = questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(Long.valueOf(transcriptId));
+        List<QuestionAnswer> questionAnswers =  getAllQAByTranscriptIdInternal(transcriptId);
         if (questionAnswers.isEmpty()) {
+            log.info("No question answers found for transcriptId: {}", transcriptId);
             throw new EntityNotFoundException("No question answers found for transcriptId: " + transcriptId);
         }
         return questionAnswers;
