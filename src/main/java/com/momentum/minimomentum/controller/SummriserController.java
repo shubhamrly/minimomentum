@@ -1,5 +1,6 @@
 package com.momentum.minimomentum.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.momentum.minimomentum.dto.responseDTO.SummaryResponseDTO;
 import com.momentum.minimomentum.service.SummaryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ public class SummriserController {
     SummaryService summaryService;
 
     @PostMapping("/summariserById/{transcriptId}")
-    public ResponseEntity<SummaryResponseDTO> getSummary(@PathVariable String transcriptId, @RequestParam(value = "language", defaultValue = "english") String language) {
+    public ResponseEntity<SummaryResponseDTO> getSummary(@PathVariable String transcriptId, @RequestParam(value = "language", defaultValue = "english") String language) throws JsonProcessingException {
         return ResponseEntity.ok(summaryService.generateSummary(transcriptId,language));
     }
 
