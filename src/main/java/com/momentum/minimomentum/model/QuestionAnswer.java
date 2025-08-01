@@ -1,10 +1,11 @@
 package com.momentum.minimomentum.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -18,14 +19,17 @@ public class QuestionAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Lob
     private String question;
+    @Lob
     private String answer;
 
     private LocalDateTime createDateTime;
 
     @ManyToOne
     @JoinColumn(name = "transcript_id")
+    @JsonIgnore
+    @ToString.Exclude
     private Transcript transcript;
 
 }
