@@ -16,7 +16,7 @@ public class TranscriptQAController {
 
     @PostMapping("answers/{transcriptId}")
     public ResponseEntity<TranscriptQAResponseDTO> getAnswersByTranscriptId(@RequestBody TranscriptQARequestDTO request) {
-        String transcriptId = request.getTranscriptID();
+        Long transcriptId = Long.valueOf(request.getTranscriptID());
         String question = request.getQuestion();
         String  OpenAiAnswer =  questionAnswerService.getAnswersByTranscriptId(transcriptId, question);
 
@@ -26,7 +26,7 @@ public class TranscriptQAController {
 
     }
     @GetMapping("getAllAnswersById/{transcriptId}")
-    public ResponseEntity<?> getAllAnswersByTranscriptId(@PathVariable String transcriptId) {
+    public ResponseEntity<?> getAllAnswersByTranscriptId(@PathVariable Long transcriptId) {
         return ResponseEntity.ok(questionAnswerService.getAllQAByTranscriptId(transcriptId));
     }
 

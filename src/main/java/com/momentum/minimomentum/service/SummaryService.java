@@ -1,12 +1,15 @@
 package com.momentum.minimomentum.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.momentum.minimomentum.constant.PromptType;
 import com.momentum.minimomentum.dto.responseDTO.SummaryDetailsDTO;
 import com.momentum.minimomentum.dto.responseDTO.SummaryResponseDTO;
-import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
 import com.momentum.minimomentum.exception.EntityNotFoundException;
+import com.momentum.minimomentum.mapper.SummaryDetailsMapper;
 import com.momentum.minimomentum.model.Summary;
+import com.momentum.minimomentum.model.SummaryDetails;
+import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.SummaryRepository;
 import com.momentum.minimomentum.service.openAi.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
@@ -18,37 +21,41 @@ import java.util.List;
 @Service
 public class SummaryService {
     @Autowired
-    GenerationService generationService;
+    TranscriptionService generationService;
     @Autowired
     private OpenAiClient openAiClient;
     @Autowired
     private SummaryRepository summaryRepository;
     @Autowired
+    private SummaryDetailsMapper summaryMapper;
+    @Autowired
     private ObjectMapper objectMapper;
 
-    public SummaryResponseDTO generateSummary(String transcriptId, String language) {
-        TranscriptResponseDTO transcript = generationService.getTranscript(transcriptId);
+
+    public SummaryResponseDTO generateSummary(String transcriptId, String language) throws JsonProcessingException {
+        Transcript transcript = generationService.getTranscriptById(Long.valueOf(transcriptId));
         String prompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + " \n\n " + transcript.getTranscriptText();
         String content = openAiClient.getCompletion(prompt);
+
+
         Summary summary = saveOrUpdateSummary(content, transcriptId, language);
-        return new SummaryResponseDTO(summary.getId(), summary.getSummary(), summary.getTranscriptId(), summary.getLanguage());
+
+        return convertToSummaryResponseDTO(summary);
     }
 
-    private Summary saveOrUpdateSummary(String content, String transcriptId, String language) {
-        SummaryDetailsDTO summaryDetails;
-        try {
-            summaryDetails = objectMapper.readValue(content, SummaryDetailsDTO.class);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse summary content to DTO", e);
-        }
-        Summary summary = summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
+    private Summary saveOrUpdateSummary(String content, String transcriptId, String language) throws JsonProcessingException {
+        SummaryDetailsDTO summaryDetailsDTO = objectMapper.readValue(content, SummaryDetailsDTO.class);
+
+        SummaryDetails summaryDetails = summaryMapper.toSummaryEntity(summaryDetailsDTO);
+        Summary summary = summaryRepository.findByTranscriptIdAndLanguage(Long.valueOf(transcriptId), language)
                 .map(existingSummary -> {
                     existingSummary.setSummary(summaryDetails);
                     return existingSummary;
                 })
                 .orElseGet(() -> {
                     Summary newSummary = new Summary();
-                    newSummary.setTranscriptId(transcriptId);
+                    Transcript transcript = generationService.getTranscriptById(Long.valueOf(transcriptId)); // Add this method in service
+                    newSummary.setTranscript(transcript);
                     newSummary.setLanguage(language);
                     newSummary.setSummary(summaryDetails);
                     return newSummary;
@@ -59,8 +66,8 @@ public class SummaryService {
 
 
     public SummaryResponseDTO getSummary(String summaryId) {
-        Summary summary = summaryRepository.findById(summaryId).orElseThrow(() -> new EntityNotFoundException("Summary not found by id: " + summaryId));
-        return new SummaryResponseDTO(summary.getId(), summary.getSummary(), summary.getTranscriptId(), summary.getLanguage());
+        Summary summary = summaryRepository.findById(Long.valueOf(summaryId)).orElseThrow(() -> new EntityNotFoundException("Summary not found by id: " + summaryId));
+        return convertToSummaryResponseDTO(summary);
     }
 
     public List<SummaryResponseDTO> getAllSummaries() {
@@ -69,7 +76,19 @@ public class SummaryService {
             throw new EntityNotFoundException("No summaries found.");
         }
         return summaryList.stream()
-                .map(s -> new SummaryResponseDTO(s.getId(), s.getSummary(), s.getTranscriptId(), s.getLanguage()))
+                .map(this::convertToSummaryResponseDTO)
                 .toList();
     }
+
+    private SummaryResponseDTO convertToSummaryResponseDTO(Summary summary) {
+        SummaryDetailsDTO summaryDTO = summaryMapper.toSummaryDto(summary.getSummary());
+        return new SummaryResponseDTO(
+                summary.getId(),
+                summaryDTO,
+                summary.getTranscript().getId().toString(),
+                summary.getLanguage()
+        );
+    }
+
+
 }
