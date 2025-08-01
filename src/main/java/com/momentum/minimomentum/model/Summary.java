@@ -16,6 +16,7 @@ public class Summary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Embedded
+    @Lob
     private SummaryDetails summary;
 
     private String language;

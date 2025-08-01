@@ -1,8 +1,12 @@
 package com.momentum.minimomentum.model;
 
-import jakarta.persistence.*;
-import java.util.List;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import lombok.Data;
 
+import java.util.List;
+@Data
 @Embeddable
 public class SummaryDetails {
 
@@ -26,6 +30,7 @@ public class SummaryDetails {
     private List<String> actionPoints;
 
     @Embeddable
+    @Data
     public static class ChurnRiskSignals {
         private String riskLevel;
 
