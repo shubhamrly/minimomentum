@@ -11,8 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SummaryDetailsDTO {
-    @JsonProperty("Summary")
-    public String summary;
     @JsonProperty("Tone")
     public String tone;
     @JsonProperty("Outcome")
@@ -27,6 +25,10 @@ public class SummaryDetailsDTO {
     public ChurnRiskSignalsDTO churnRiskSignals;
     @JsonProperty("ActionPoints")
     public List<String> actionPoints;
+    @JsonProperty("Agent")
+    public String agent;
+    @JsonProperty("Customer")
+    public String customer;
 
     @Data
     public static class ChurnRiskSignalsDTO{
