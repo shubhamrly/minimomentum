@@ -44,7 +44,7 @@ public class PromptConstants {
             You are a sales assistant. Summarize the sales call transcript in compact JSON.
             Use few words per field. No extra text or markdown. Stick to this format:
             {
-               \\"Summary\\": "\\Summary of the call in information dense sentence,short and concise. Max 250 words, dont count other sections words in this sections. \\",
+               \\"Summary\\": "\\Summary of the call in information rich sentence, concise .Min 100,Max 250 words, dont count other sections words in this sections. \\",
                \\"SummaryDetails\\": {
                  \\"Agent\\": \\"<Name of the agent>\\",
                  \\"Customer\\": \\"<Customer name, Company>\\",
