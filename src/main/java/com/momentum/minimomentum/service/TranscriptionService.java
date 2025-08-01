@@ -23,11 +23,12 @@ public class TranscriptionService {
     private TranscriptionRepository transcriptRepository;
 
 
+
     public TranscriptResponseDTO generateTranscript(String language) {
         String prompt = PromptUtils.getPrompt(PromptType.GENERATION_PROMPT, language);
         String content = openAiClient.getCompletion(prompt);
         Transcript transcript = createAndSaveTranscripts(content, language);
-        return new TranscriptResponseDTO(transcript.getId(), content, language, transcript.getCreateDateTime());
+        return toTranscriptResponseDTO(transcript);
     }
 
     public Transcript createAndSaveTranscripts(String content, String language) {
@@ -39,8 +40,13 @@ public class TranscriptionService {
     }
 
     public Transcript getTranscriptById(Long id) {
-        Transcript transcript = transcriptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
-        return new Transcript(transcript.getId(), transcript.getTranscriptText(), transcript.getLanguage(), transcript.getCreateDateTime());
+       return  transcriptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
+        //return new Transcript(transcript.getId(), transcript.getTranscriptText(), transcript.getLanguage(), transcript.getCreateDateTime());
+    }
+
+    public TranscriptResponseDTO getTranscriptDtoById(Long id) {
+        Transcript transcript = getTranscriptById(id);
+        return toTranscriptResponseDTO(transcript);
     }
 
     public List<TranscriptResponseDTO> getAllTranscripts() {
@@ -55,7 +61,14 @@ public class TranscriptionService {
                 .collect(Collectors.toList());
     }
 
-
+    public TranscriptResponseDTO toTranscriptResponseDTO(Transcript transcript) {
+        TranscriptResponseDTO responseDto = new TranscriptResponseDTO();
+        responseDto.setId(transcript.getId());
+        responseDto.setTranscriptText(transcript.getTranscriptText());
+        responseDto.setLanguage(transcript.getLanguage());
+        responseDto.setCreateDateTime(transcript.getCreateDateTime());
+        return responseDto;
+    }
 }
 
 
