@@ -23,7 +23,7 @@ public class TranscriptionController {
 
     @GetMapping("/getTranscriptById/{transcriptId}")
     public ResponseEntity<?> getTranscriptById(@PathVariable Long transcriptId) {
-        return ResponseEntity.ok(generationService.getTranscriptById(transcriptId));
+        return ResponseEntity.ok(generationService.getTranscriptDtoById(transcriptId));
     }
 
     @GetMapping("/getAllTranscripts")
