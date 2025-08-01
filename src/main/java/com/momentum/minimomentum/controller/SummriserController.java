@@ -14,12 +14,12 @@ public class SummriserController {
     SummaryService summaryService;
 
     @PostMapping("/summariserById/{transcriptId}")
-    public ResponseEntity<SummaryResponseDTO> getSummary(@PathVariable String transcriptId, @RequestParam(value = "language", defaultValue = "english") String language) throws JsonProcessingException {
+    public ResponseEntity<SummaryResponseDTO> getSummary(@PathVariable Long transcriptId, @RequestParam(value = "language", defaultValue = "english") String language) throws JsonProcessingException {
         return ResponseEntity.ok(summaryService.generateSummary(transcriptId,language));
     }
 
     @GetMapping("/getSummaryById/{summaryId}")
-    public ResponseEntity<?> getSummaryById(@PathVariable String summaryId) {
+    public ResponseEntity<?> getSummaryById(@PathVariable Long summaryId) {
         return ResponseEntity.ok(summaryService.getSummary(summaryId));
 
     }

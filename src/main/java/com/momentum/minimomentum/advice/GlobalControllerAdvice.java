@@ -2,6 +2,7 @@ package com.momentum.minimomentum.advice;
 
 import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.exception.PromptNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,7 +25,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException e) {
         return ResponseEntity
-                .notFound()
-                .build();
+                .status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage());
     }
 }
