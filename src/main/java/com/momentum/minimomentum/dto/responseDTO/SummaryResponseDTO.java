@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SummaryResponseDTO {
-    private String summaryId;
+    private Long summaryId;
     private SummaryDetailsDTO summary;
     private String transcriptId;
     private String language;
