@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class GenerationService {
+public class TranscriptionService {
     @Autowired
     private OpenAiClient openAiClient;
     @Autowired
@@ -27,20 +27,20 @@ public class GenerationService {
         String prompt = PromptUtils.getPrompt(PromptType.GENERATION_PROMPT, language);
         String content = openAiClient.getCompletion(prompt);
         Transcript transcript = createAndSaveTranscripts(content, language);
-        return new TranscriptResponseDTO(transcript.getId(), content, language, transcript.getCreatedAt());
+        return new TranscriptResponseDTO(transcript.getId(), content, language, transcript.getCreateDateTime());
     }
 
     public Transcript createAndSaveTranscripts(String content, String language) {
         Transcript transcript = new Transcript();
         transcript.setLanguage(language);
         transcript.setTranscriptText(content);
-        transcript.setCreatedAt(LocalDateTime.now());
+        transcript.setCreateDateTime(LocalDateTime.now());
         return transcriptRepository.save(transcript);
     }
 
-    public TranscriptResponseDTO getTranscript(String id) {
+    public Transcript getTranscriptById(Long id) {
         Transcript transcript = transcriptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
-        return new TranscriptResponseDTO(transcript.getId(), transcript.getTranscriptText(), transcript.getLanguage(), transcript.getCreatedAt());
+        return new Transcript(transcript.getId(), transcript.getTranscriptText(), transcript.getLanguage(), transcript.getCreateDateTime());
     }
 
     public List<TranscriptResponseDTO> getAllTranscripts() {
@@ -51,7 +51,7 @@ public class GenerationService {
         }
 
         return transcriptList.stream()
-                .map(t -> new TranscriptResponseDTO(t.getId(), t.getTranscriptText(), t.getLanguage(), t.getCreatedAt()))
+                .map(t -> new TranscriptResponseDTO(t.getId(), t.getTranscriptText(), t.getLanguage(), t.getCreateDateTime()))
                 .collect(Collectors.toList());
     }
 
