@@ -19,6 +19,7 @@ public class Transcript {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Lob
     String transcriptText;
 
     String language;
@@ -33,6 +34,4 @@ public class Transcript {
     @OneToMany(mappedBy = "transcript", cascade = CascadeType.ALL)
     private List<QuestionAnswer> questionAnswers;
 
-    public Transcript(Long id, String transcriptText, String language, LocalDateTime createDateTime) {
-    }
 }

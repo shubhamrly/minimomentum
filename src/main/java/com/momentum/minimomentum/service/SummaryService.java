@@ -6,7 +6,6 @@ import com.momentum.minimomentum.constant.PromptType;
 import com.momentum.minimomentum.dto.responseDTO.SummaryDetailsDTO;
 import com.momentum.minimomentum.dto.responseDTO.SummaryResponseDTO;
 import com.momentum.minimomentum.exception.EntityNotFoundException;
-import com.momentum.minimomentum.mapper.SummaryDetailsMapper;
 import com.momentum.minimomentum.model.Summary;
 import com.momentum.minimomentum.model.SummaryDetails;
 import com.momentum.minimomentum.model.Transcript;
@@ -27,8 +26,6 @@ public class SummaryService {
     @Autowired
     private SummaryRepository summaryRepository;
     @Autowired
-    private SummaryDetailsMapper summaryMapper;
-    @Autowired
     private ObjectMapper objectMapper;
 
 
@@ -46,7 +43,7 @@ public class SummaryService {
     private Summary saveOrUpdateSummary(String content, String transcriptId, String language) throws JsonProcessingException {
         SummaryDetailsDTO summaryDetailsDTO = objectMapper.readValue(content, SummaryDetailsDTO.class);
 
-        SummaryDetails summaryDetails = summaryMapper.toSummaryEntity(summaryDetailsDTO);
+        SummaryDetails summaryDetails = toSummaryDetailsEntity(summaryDetailsDTO);
         Summary summary = summaryRepository.findByTranscriptIdAndLanguage(Long.valueOf(transcriptId), language)
                 .map(existingSummary -> {
                     existingSummary.setSummary(summaryDetails);
@@ -81,7 +78,7 @@ public class SummaryService {
     }
 
     private SummaryResponseDTO convertToSummaryResponseDTO(Summary summary) {
-        SummaryDetailsDTO summaryDTO = summaryMapper.toSummaryDto(summary.getSummary());
+        SummaryDetailsDTO summaryDTO = toSummaryDetailsDto(summary.getSummary());
         return new SummaryResponseDTO(
                 summary.getId(),
                 summaryDTO,
@@ -89,6 +86,52 @@ public class SummaryService {
                 summary.getLanguage()
         );
     }
+
+    private SummaryDetailsDTO toSummaryDetailsDto(SummaryDetails entity) {
+        if (entity == null) return null;
+
+        SummaryDetailsDTO dto = new SummaryDetailsDTO();
+        dto.setSummary(entity.getSummary());
+        dto.setTone(entity.getTone());
+        dto.setOutcome(entity.getOutcome());
+        dto.setWhatWentWell(entity.getWhatWentWell());
+        dto.setWhatCouldBeImproved(entity.getWhatCouldBeImproved());
+        dto.setObjectionsOrDiscoveryInsights(entity.getObjectionsOrDiscoveryInsights());
+        dto.setActionPoints(entity.getActionPoints());
+
+        if (entity.getChurnRiskSignals() != null) {
+            SummaryDetailsDTO.ChurnRiskSignalsDTO crsDto = new SummaryDetailsDTO.ChurnRiskSignalsDTO();
+            crsDto.setRiskLevel(entity.getChurnRiskSignals().getRiskLevel());
+            crsDto.setSignals(entity.getChurnRiskSignals().getSignals());
+            dto.setChurnRiskSignals(crsDto);
+        }
+
+        return dto;
+    }
+
+    private SummaryDetails toSummaryDetailsEntity(SummaryDetailsDTO dto) {
+        if (dto == null) return null;
+
+        SummaryDetails entity = new SummaryDetails();
+        entity.setSummary(dto.getSummary());
+        entity.setTone(dto.getTone());
+        entity.setOutcome(dto.getOutcome());
+        entity.setWhatWentWell(dto.getWhatWentWell());
+        entity.setWhatCouldBeImproved(dto.getWhatCouldBeImproved());
+        entity.setObjectionsOrDiscoveryInsights(dto.getObjectionsOrDiscoveryInsights());
+        entity.setActionPoints(dto.getActionPoints());
+
+        if (dto.getChurnRiskSignals() != null) {
+            SummaryDetails.ChurnRiskSignals crs = new SummaryDetails.ChurnRiskSignals();
+            crs.setRiskLevel(dto.getChurnRiskSignals().getRiskLevel());
+            crs.setSignals(dto.getChurnRiskSignals().getSignals());
+            entity.setChurnRiskSignals(crs);
+        }
+
+        return entity;
+    }
+
+
 
 
 }
