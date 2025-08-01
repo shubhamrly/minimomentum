@@ -1,6 +1,7 @@
 package com.momentum.minimomentum.service;
 
 import com.momentum.minimomentum.constant.PromptType;
+import com.momentum.minimomentum.dto.responseDTO.TranscriptQAResponseDTO;
 import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.QuestionAnswer;
 import com.momentum.minimomentum.model.Transcript;
@@ -47,12 +48,13 @@ public class QuestionAnswerService {
         return createAndSaveQuestionAnswer(transcriptId, question, content).getAnswer();
     }
 
-    public List<QuestionAnswer> getAllQAByTranscriptIdInternal(Long transcriptId) {
-        return questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(transcriptId);
+    public List<TranscriptQAResponseDTO> getAllQAByTranscriptIdInternal(Long transcriptId) {
+        List<QuestionAnswer> questionAnswers = questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(transcriptId);
+        return toTranscriptQAResponseDTOList(questionAnswers);
     }
 
-    public List<QuestionAnswer> getAllQAByTranscriptId(Long transcriptId) {
-        List<QuestionAnswer> questionAnswers =  getAllQAByTranscriptIdInternal(transcriptId);
+    public List<TranscriptQAResponseDTO> getAllQAByTranscriptId(Long transcriptId) {
+        List<TranscriptQAResponseDTO> questionAnswers =  getAllQAByTranscriptIdInternal(transcriptId);
         if (questionAnswers.isEmpty()) {
             log.info("No question answers found for transcriptId: {}", transcriptId);
             throw new EntityNotFoundException("No question answers found for transcriptId: " + transcriptId);
@@ -69,4 +71,19 @@ public class QuestionAnswerService {
         questionAnswer.setCreateDateTime(LocalDateTime.now());
         return questionAnswersRepository.save(questionAnswer);
     }
+    public TranscriptQAResponseDTO toTranscriptQAResponseDTO(QuestionAnswer questionAnswer) {
+        TranscriptQAResponseDTO responseDTO = new TranscriptQAResponseDTO();
+        responseDTO.setId(String.valueOf(questionAnswer.getId()));
+        responseDTO.setQuestion(questionAnswer.getQuestion());
+        responseDTO.setAnswer(questionAnswer.getAnswer());
+        responseDTO.setTranscriptId(questionAnswer.getTranscript().getId());
+        responseDTO.setCreateDateTime(questionAnswer.getCreateDateTime());
+        return responseDTO;
+    }
+    public List<TranscriptQAResponseDTO> toTranscriptQAResponseDTOList(List<QuestionAnswer> questionAnswerList) {
+        return questionAnswerList.stream()
+                .map(this::toTranscriptQAResponseDTO)
+                .toList();
+    }
+
 }

@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "transcripts")
@@ -25,13 +23,5 @@ public class Transcript {
     String language;
 
     LocalDateTime createDateTime;
-
-
-    @OneToMany(mappedBy = "transcript", cascade = CascadeType.ALL)
-    private List<Summary> summaries;
-
-
-    @OneToMany(mappedBy = "transcript", cascade = CascadeType.ALL)
-    private List<QuestionAnswer> questionAnswers;
 
 }

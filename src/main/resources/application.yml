@@ -26,7 +26,3 @@ openai:
 
 server:
   port: 8081
-
-logging:
-  level:
-    com.momentum.minimomentum: DEBUG

@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/transcriptions")
@@ -27,7 +30,7 @@ public class TranscriptQAController {
 
     }
     @GetMapping("getAllAnswersById/{transcriptId}")
-    public ResponseEntity<?> getAllAnswersByTranscriptId(@PathVariable Long transcriptId) {
+    public ResponseEntity<List<TranscriptQAResponseDTO>> getAllAnswersByTranscriptId(@PathVariable Long transcriptId) {
         log.info("TranscriptQAController || getAllAnswersByTranscriptId called with transcriptId: {}", transcriptId);
         return ResponseEntity.ok(questionAnswerService.getAllQAByTranscriptId(transcriptId));
     }
