@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TranscriptQARequestDTO {
 
-        private String transcriptID;
+        private Long transcriptID;
         private String question;
 
     }

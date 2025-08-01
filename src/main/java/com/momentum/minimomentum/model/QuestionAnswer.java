@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -29,7 +28,6 @@ public class QuestionAnswer {
     @ManyToOne
     @JoinColumn(name = "transcript_id")
     @JsonIgnore
-    @ToString.Exclude
     private Transcript transcript;
 
 }
