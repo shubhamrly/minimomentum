@@ -45,7 +45,7 @@ public class SummaryService {
         String summaryText = wrapper.getSummary();
         SummaryDetails summaryDetails = toSummaryDetailsEntity(wrapper.getSummaryDetails());
 
-        return summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
+         Summary summaryObj = summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
                 .map(existing -> {
                     existing.setSummaryText(summaryText);
                     existing.setSummaryDetails(summaryDetails);
@@ -60,6 +60,7 @@ public class SummaryService {
                     newSummary.setSummaryDetails(summaryDetails);
                     return newSummary;
                 });
+        return summaryRepository.save(summaryObj);
     }
 
 
