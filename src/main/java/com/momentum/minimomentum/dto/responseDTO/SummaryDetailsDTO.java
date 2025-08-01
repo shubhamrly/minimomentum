@@ -1,32 +1,41 @@
 package com.momentum.minimomentum.dto.responseDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SummaryDetailsDTO {
-    @JsonProperty("Summary")
-    public String summary;
     @JsonProperty("Tone")
     public String tone;
     @JsonProperty("Outcome")
     public String outcome;
     @JsonProperty("WhatWentWell")
-    public ArrayList<String> whatWentWell;
+    public List<String> whatWentWell;
     @JsonProperty("WhatCouldBeImproved")
-    public ArrayList<String> whatCouldBeImproved;
+    public List<String> whatCouldBeImproved;
     @JsonProperty("ObjectionsOrDiscoveryInsights")
-    public ArrayList<String> objectionsOrDiscoveryInsights;
+    public List<String> objectionsOrDiscoveryInsights;
     @JsonProperty("ChurnRiskSignals")
     public ChurnRiskSignalsDTO churnRiskSignals;
     @JsonProperty("ActionPoints")
-    public ArrayList<String> actionPoints;
+    public List<String> actionPoints;
+    @JsonProperty("Agent")
+    public String agent;
+    @JsonProperty("Customer")
+    public String customer;
 
+    @Data
     public static class ChurnRiskSignalsDTO{
         @JsonProperty("RiskLevel")
         public String riskLevel;
         @JsonProperty("Signals")
-        public ArrayList<String> signals;
+        public List<String> signals;
     }
 }
 

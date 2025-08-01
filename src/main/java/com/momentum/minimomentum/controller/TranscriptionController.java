@@ -1,7 +1,7 @@
 package com.momentum.minimomentum.controller;
 
 import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
-import com.momentum.minimomentum.service.GenerationService;
+import com.momentum.minimomentum.service.TranscriptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/transcriptions")
 public class TranscriptionController {
     @Autowired
-    GenerationService generationService;
+    TranscriptionService generationService;
 
 
     @PostMapping("/generateTranscript")
@@ -22,8 +22,8 @@ public class TranscriptionController {
     }
 
     @GetMapping("/getTranscriptById/{transcriptId}")
-    public ResponseEntity<?> getTranscript(@PathVariable String transcriptId) {
-        return ResponseEntity.ok(generationService.getTranscript(transcriptId));
+    public ResponseEntity<?> getTranscriptById(@PathVariable Long transcriptId) {
+        return ResponseEntity.ok(generationService.getTranscriptDtoById(transcriptId));
     }
 
     @GetMapping("/getAllTranscripts")

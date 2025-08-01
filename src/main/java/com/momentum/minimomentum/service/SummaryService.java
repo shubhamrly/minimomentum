@@ -1,12 +1,15 @@
 package com.momentum.minimomentum.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.momentum.minimomentum.constant.PromptType;
+import com.momentum.minimomentum.dto.responseDTO.SummaryDTO;
 import com.momentum.minimomentum.dto.responseDTO.SummaryDetailsDTO;
 import com.momentum.minimomentum.dto.responseDTO.SummaryResponseDTO;
-import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
 import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.Summary;
+import com.momentum.minimomentum.model.SummaryDetails;
+import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.SummaryRepository;
 import com.momentum.minimomentum.service.openAi.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
@@ -17,8 +20,9 @@ import java.util.List;
 
 @Service
 public class SummaryService {
+
     @Autowired
-    GenerationService generationService;
+    private TranscriptionService generationService;
     @Autowired
     private OpenAiClient openAiClient;
     @Autowired
@@ -26,41 +30,45 @@ public class SummaryService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public SummaryResponseDTO generateSummary(String transcriptId, String language) {
-        TranscriptResponseDTO transcript = generationService.getTranscript(transcriptId);
-        String prompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + " \n\n " + transcript.getTranscriptText();
+    public SummaryResponseDTO generateSummary(Long transcriptId, String language) throws JsonProcessingException {
+        Transcript transcript = generationService.getTranscriptById(transcriptId);
+        String prompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + "\n\n" + transcript.getTranscriptText();
         String content = openAiClient.getCompletion(prompt);
+
         Summary summary = saveOrUpdateSummary(content, transcriptId, language);
-        return new SummaryResponseDTO(summary.getId(), summary.getSummary(), summary.getTranscriptId(), summary.getLanguage());
+        return convertToSummaryResponseDTO(summary);
     }
 
-    private Summary saveOrUpdateSummary(String content, String transcriptId, String language) {
-        SummaryDetailsDTO summaryDetails;
-        try {
-            summaryDetails = objectMapper.readValue(content, SummaryDetailsDTO.class);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse summary content to DTO", e);
-        }
-        Summary summary = summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
-                .map(existingSummary -> {
-                    existingSummary.setSummary(summaryDetails);
-                    return existingSummary;
+    private Summary saveOrUpdateSummary(String content, Long transcriptId, String language) throws JsonProcessingException {
+        SummaryDTO wrapper = objectMapper.readValue(content, SummaryDTO.class);
+
+        String summaryText = wrapper.getSummary();
+        SummaryDetails summaryDetails = toSummaryDetailsEntity(wrapper.getSummaryDetails());
+
+         Summary summaryObj = summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
+                .map(existing -> {
+                    existing.setSummaryText(summaryText);
+                    existing.setSummaryDetails(summaryDetails);
+                    return existing;
                 })
                 .orElseGet(() -> {
                     Summary newSummary = new Summary();
-                    newSummary.setTranscriptId(transcriptId);
+                    Transcript transcript = generationService.getTranscriptById(transcriptId);
+                    newSummary.setTranscript(transcript);
                     newSummary.setLanguage(language);
-                    newSummary.setSummary(summaryDetails);
+                    newSummary.setSummaryText(summaryText);
+                    newSummary.setSummaryDetails(summaryDetails);
                     return newSummary;
                 });
-
-        return summaryRepository.save(summary);
+        return summaryRepository.save(summaryObj);
     }
 
 
-    public SummaryResponseDTO getSummary(String summaryId) {
-        Summary summary = summaryRepository.findById(summaryId).orElseThrow(() -> new EntityNotFoundException("Summary not found by id: " + summaryId));
-        return new SummaryResponseDTO(summary.getId(), summary.getSummary(), summary.getTranscriptId(), summary.getLanguage());
+
+    public SummaryResponseDTO getSummary(Long summaryId) {
+        Summary summary = summaryRepository.findById(summaryId)
+                .orElseThrow(() -> new EntityNotFoundException("Summary not found by id: " + summaryId));
+        return convertToSummaryResponseDTO(summary);
     }
 
     public List<SummaryResponseDTO> getAllSummaries() {
@@ -69,7 +77,69 @@ public class SummaryService {
             throw new EntityNotFoundException("No summaries found.");
         }
         return summaryList.stream()
-                .map(s -> new SummaryResponseDTO(s.getId(), s.getSummary(), s.getTranscriptId(), s.getLanguage()))
+                .map(this::convertToSummaryResponseDTO)
                 .toList();
+    }
+
+    private SummaryResponseDTO convertToSummaryResponseDTO(Summary summary) {
+
+        SummaryDetailsDTO summaryDetailsDTO = toSummaryDetailsDto(summary.getSummaryDetails());
+
+        return new SummaryResponseDTO(
+                summary.getId(),
+                summary.getSummaryText(),
+                summaryDetailsDTO,
+                summary.getTranscript().getId().toString(),
+                summary.getLanguage()
+        );
+
+    }
+
+
+    private SummaryDetailsDTO toSummaryDetailsDto(SummaryDetails entity) {
+        if (entity == null) return null;
+
+        SummaryDetailsDTO dto = new SummaryDetailsDTO();
+        dto.setTone(entity.getTone());
+        dto.setOutcome(entity.getOutcome());
+        dto.setWhatWentWell(entity.getWhatWentWell());
+        dto.setWhatCouldBeImproved(entity.getWhatCouldBeImproved());
+        dto.setObjectionsOrDiscoveryInsights(entity.getObjectionsOrDiscoveryInsights());
+        dto.setActionPoints(entity.getActionPoints());
+        dto.setAgent(entity.getAgent());
+        dto.setCustomer(entity.getCustomer());
+
+        if (entity.getChurnRiskSignals() != null) {
+            SummaryDetailsDTO.ChurnRiskSignalsDTO crsDto = new SummaryDetailsDTO.ChurnRiskSignalsDTO();
+            crsDto.setRiskLevel(entity.getChurnRiskSignals().getRiskLevel());
+            crsDto.setSignals(entity.getChurnRiskSignals().getSignals());
+            dto.setChurnRiskSignals(crsDto);
+        }
+
+        return dto;
+    }
+
+
+    private SummaryDetails toSummaryDetailsEntity(SummaryDetailsDTO dto) {
+        if (dto == null) return null;
+
+        SummaryDetails entity = new SummaryDetails();
+        entity.setTone(dto.getTone());
+        entity.setOutcome(dto.getOutcome());
+        entity.setWhatWentWell(dto.getWhatWentWell());
+        entity.setWhatCouldBeImproved(dto.getWhatCouldBeImproved());
+        entity.setObjectionsOrDiscoveryInsights(dto.getObjectionsOrDiscoveryInsights());
+        entity.setActionPoints(dto.getActionPoints());
+        entity.setAgent(dto.getAgent());
+        entity.setCustomer(dto.getCustomer());
+
+        if (dto.getChurnRiskSignals() != null) {
+            SummaryDetails.ChurnRiskSignals crs = new SummaryDetails.ChurnRiskSignals();
+            crs.setRiskLevel(dto.getChurnRiskSignals().getRiskLevel());
+            crs.setSignals(dto.getChurnRiskSignals().getSignals());
+            entity.setChurnRiskSignals(crs);
+        }
+
+        return entity;
     }
 }

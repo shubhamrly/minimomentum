@@ -1,30 +1,36 @@
 package com.momentum.minimomentum.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Data
-@Document(collection = "question_answers")
+@Entity
+@Table(name = "question_answers")
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuestionAnswer {
 
     @Id
-    private String id;
-
-    @Field("transcript_id")
-    private String transcriptId; // Acts as foreign key
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Lob
     private String question;
+    @Lob
     private String answer;
 
     private LocalDateTime createDateTime;
+
+    @ManyToOne
+    @JoinColumn(name = "transcript_id")
+    @JsonIgnore
+    @ToString.Exclude
+    private Transcript transcript;
 
 }
 

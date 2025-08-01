@@ -3,6 +3,7 @@ package com.momentum.minimomentum.service;
 import com.momentum.minimomentum.constant.PromptType;
 import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.QuestionAnswer;
+import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.QuestionAnswersRepository;
 import com.momentum.minimomentum.service.openAi.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
@@ -17,15 +18,15 @@ import java.util.List;
 @Service
 public class QuestionAnswerService {
     @Autowired
-    GenerationService generationService;
+    TranscriptionService generationService;
     @Autowired
     QuestionAnswersRepository questionAnswersRepository;
     @Autowired
     OpenAiClient openAiClient;
 
-    public String getAnswersByTranscriptId(String transcriptId, String question) {
+    public String getAnswersByTranscriptId(Long transcriptId, String question) {
 
-        String transcriptText = generationService.getTranscript(transcriptId).getTranscriptText();
+        String transcriptText = generationService.getTranscriptById(transcriptId).getTranscriptText();
 
         String prompt = PromptUtils.getPrompt(PromptType.QUESTION_ANSWERING_PROMPT, "english");
         String promptWithHistory = String.format("""
@@ -37,7 +38,7 @@ public class QuestionAnswerService {
                         """,
                 prompt,
                 transcriptText,
-                getAllQAByTranscriptId(transcriptId),
+                getAllQAByTranscriptIdInternal(transcriptId),
                 question
         );
 
@@ -46,17 +47,23 @@ public class QuestionAnswerService {
         return createAndSaveQuestionAnswer(transcriptId, question, content).getAnswer();
     }
 
-    public List<QuestionAnswer> getAllQAByTranscriptId(String transcriptId) {
-        List<QuestionAnswer> questionAnswers = questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(transcriptId);
+    public List<QuestionAnswer> getAllQAByTranscriptIdInternal(Long transcriptId) {
+        return questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(transcriptId);
+    }
+
+    public List<QuestionAnswer> getAllQAByTranscriptId(Long transcriptId) {
+        List<QuestionAnswer> questionAnswers =  getAllQAByTranscriptIdInternal(transcriptId);
         if (questionAnswers.isEmpty()) {
+            log.info("No question answers found for transcriptId: {}", transcriptId);
             throw new EntityNotFoundException("No question answers found for transcriptId: " + transcriptId);
         }
         return questionAnswers;
     }
 
-    public QuestionAnswer createAndSaveQuestionAnswer(String transcriptId, String question, String answer) {
+    public QuestionAnswer createAndSaveQuestionAnswer(Long transcriptId, String question, String answer) {
         QuestionAnswer questionAnswer = new QuestionAnswer();
-        questionAnswer.setTranscriptId(transcriptId);
+        Transcript transcript = generationService.getTranscriptById(transcriptId);
+        questionAnswer.setTranscript(transcript);
         questionAnswer.setQuestion(question);
         questionAnswer.setAnswer(answer);
         questionAnswer.setCreateDateTime(LocalDateTime.now());

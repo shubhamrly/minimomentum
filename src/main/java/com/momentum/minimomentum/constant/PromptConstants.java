@@ -1,21 +1,20 @@
 package com.momentum.minimomentum.constant;
 
 public class PromptConstants {
-    public static final String SYSTEM_CONTEXT_CONSTANT =
-            """
-                         You are an AI assistant for generating and analyzing sales call transcripts. Follow these rules:
-                             1. Generate realistic mock sales call transcripts
-                                - Use speaker roles, timestamps [HH:MM:SS], and a natural dialogue flow.
-                                - Use a consistent format for speaker names and roles and Timestamps
-                             2. Summarize transcripts with:
-                                - Tone of the conversation
-                                - Outcome or decision made
-                                - Sales team strengths and gaps
-                                - Actionable improvements
-                             3. Answer questions strictly based on transcript and QA history
-                                - Use only context from the transcript
-                                - Highlight key, relevant parts when responding"
-                    """;
+    public static final String SYSTEM_CONTEXT_CONSTANT = """
+                 You are an AI assistant for generating and analyzing sales call transcripts. Follow these rules:
+                     1. Generate realistic mock sales call transcripts
+                        - Use speaker roles, timestamps [HH:MM:SS], and a natural dialogue flow.
+                        - Use a consistent format for speaker names and roles and Timestamps
+                     2. Summarize transcripts with:
+                        - Tone of the conversation
+                        - Outcome or decision made
+                        - Sales team strengths and gaps
+                        - Actionable improvements
+                     3. Answer questions strictly based on transcript and QA history
+                        - Use only context from the transcript
+                        - Highlight key, relevant parts when responding"
+            """;
 
     public static final String GENERATION_PROMPT_CONSTANT = """
                 Generate a realistic mock sales call transcript.
@@ -45,19 +44,24 @@ public class PromptConstants {
             You are a sales assistant. Summarize the sales call transcript in compact JSON.
             Use few words per field. No extra text or markdown. Stick to this format:
             {
-              \\"Summary\\": \\"(Client - <ClientCompany> - Sales Agent - <AgentCompany>) : CallDuration: <CallDuration>\\",
-              \\"Tone\\": \\"<4-5 words>\\",
-              \\"Outcome\\": \\"<Main result>\\",
-              \\"WhatWentWell\\": [ \\"Short positive bullets\\" ],
-              \\"WhatCouldBeImproved\\": [ \\"Short improvement bullets\\" ],
-              \\"ObjectionsOrDiscoveryInsights\\": [ \\"Key objections or insights\\" ],
-              \\"ChurnRiskSignals\\": {
-                \\"RiskLevel\\": \\"<0-100>%% \\",
-                \\"Signals\\": [ \\"Churn signs with timestamps, what was the signal\\" ]
-              },
-              \\"ActionPoints\\": [ \\"Next steps or tasks\\" ]
-            }
-            Summary Fomatting rules:
+               \\"Summary\\": "\\Summary of the call in information rich sentence, concise .Min 100,Max 250 words, dont count other sections words in this sections. \\",
+               \\"SummaryDetails\\": {
+                 \\"Agent\\": \\"<Name of the agent>\\",
+                 \\"Customer\\": \\"<Customer name, Company>\\",
+                 \\"Tone\\": \\"<4-5 words>\\",
+                 \\"Outcome\\": \\"<Main result>\\",
+                 \\"WhatWentWell\\": [ \\"Short positive bullets\\" ],
+                 \\"WhatCouldBeImproved\\": [ \\"Short improvement bullets\\" ],
+                 \\"ObjectionsOrDiscoveryInsights\\": [ \\"Key objections or insights\\" ],
+                 \\"ActionPoints\\": [ \\"Next steps or tasks\\" ],
+                \\ "ChurnRiskSignals\\": {
+                   \\"RiskLevel\\": \\"<0-100>%%\\",
+                   \\"Signals\\": [ \\"Churn signs with timestamps, what was the signal\\" ]
+                 }
+               }
+             }
+            
+            Summary Formatting rules:
             Reply only with JSON. Be dense and insight-rich.
             - Do not escape newlines. Output should include actual line breaks between entries, not '\\n'. Output must be plain text.
             - Language: %s  should always be followed and given priority for returning complete response of json including key and value fields, If the language is not supported, use English.
@@ -65,17 +69,16 @@ public class PromptConstants {
             
             Transcript:
             """;
-   public static String QUESTION_ANSWERING_PROMPT_CONSTANT= """ 
-            You are a sales assistant. Answer the question based on the provided transcript.
-            - you will be provided with a transcript of a sales call and a question related to it.
-            - Use only the information from the transcript and question and answer history avaiable with it to answer the question.
-            - if history is available, use it to answer the question. The question is will sorted according to latest by createdAt date parameter so use it to answer the question.
-            - If the question is not related to the transcript, respond with "This question is not related to the transcript."
-            - Answer Format rules:
-            - Keep it short and concise
-            - Dont exceed 100 words.
-            - if language is provided answer the question in that, if the question is asked in that same language other than english,give priority to language of the question.
-           """;
+    public static String QUESTION_ANSWERING_PROMPT_CONSTANT = """ 
+             You are a sales assistant. Answer the question based on the provided transcript.
+             - you will be provided with a transcript of a sales call and a question related to it.
+             - Use only the information from the transcript and question and answer history avaiable with it to answer the question.
+             - if history is available, use it to answer the question. The question is will sorted according to latest by createdDatetime parameter so use it to answer the question.
+             - If the question is not related to the transcript, respond with "This question is not related to the transcript."
+             - Answer Format rules:
+             - Keep the response under 100 words always.
+             - if language is provided answer the question in that, if the question is asked in that same language other than english,give priority to language of the question.
+            """;
 
 
 }

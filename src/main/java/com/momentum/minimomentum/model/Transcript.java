@@ -1,18 +1,37 @@
 package com.momentum.minimomentum.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.NoArgsConstructor;
+
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+@Entity
+@Table(name = "transcripts")
 @Data
-@Document(collection = "transcripts")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Transcript {
     @Id
-    String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    @Lob
     String transcriptText;
+
     String language;
-    LocalDateTime createdAt;
+
+    LocalDateTime createDateTime;
+
+
+    @OneToMany(mappedBy = "transcript", cascade = CascadeType.ALL)
+    private List<Summary> summaries;
+
+
+    @OneToMany(mappedBy = "transcript", cascade = CascadeType.ALL)
+    private List<QuestionAnswer> questionAnswers;
 
 }

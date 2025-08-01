@@ -1,20 +1,33 @@
 package com.momentum.minimomentum.model;
 
-import com.momentum.minimomentum.dto.responseDTO.SummaryDetailsDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.ToString;
+
 
 @Data
-@Document(collection = "summaries")
+@Entity
+@Table(name = "summaries")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Summary {
     @Id
-    private String id;
-    private SummaryDetailsDTO summary;
-    private String transcriptId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Lob
+    private String summaryText;
+    @Embedded
+    private SummaryDetails summaryDetails;
+
     private String language;
+
+    @ManyToOne
+    @JoinColumn(name = "transcript_id")
+    @JsonIgnore
+    @ToString.Exclude
+    private Transcript transcript;
 }
