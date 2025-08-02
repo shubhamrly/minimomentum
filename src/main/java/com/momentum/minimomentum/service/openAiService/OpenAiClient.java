@@ -24,15 +24,17 @@ public class OpenAiClient {
     private double temperature;
 
     public String getCompletionOpenAi(String userPrompt) {
-        Instant starts = Instant.now();
+        LocalDateTime startTime = LocalDateTime.now();
+
+        log.info("Prompt: {}",userPrompt);
 
         String content = chatClient.prompt()
                 .system(PromptConstants.SYSTEM_CONTEXT_CONSTANT)
                 .user(userPrompt)
                 .call()
                 .content();
-        Instant ends = Instant.now();
-        log.debug("[{}] time taken by open-ai: {}",getClass().getSimpleName(), Duration.between(starts, ends));
+        LocalDateTime endTime = LocalDateTime.now();
+        log.debug("[{}] Time taken by open-ai: {}",getClass().getSimpleName(), Duration.between(endTime, startTime));
         return content;
     }
 

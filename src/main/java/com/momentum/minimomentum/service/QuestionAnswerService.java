@@ -39,12 +39,11 @@ public class QuestionAnswerService {
                         
                         Question: %s
                         """,
-                PromptConstants.QUESTION_ANSWERING_PROMPT_CONSTANT,
+                PromptConstants.QUESTION_ANSWER_PROMPT_CONSTANT,
                 transcriptText,
                 getAllQAByTranscriptIdInternal(transcriptId),
                 question
         ).replaceAll("\\s+", " ").trim();
-
         String content = openAiClient.getCompletionOpenAi(promptWithHistory);
 
         log.info("[{}] Generated answer for question: {}", className , question);

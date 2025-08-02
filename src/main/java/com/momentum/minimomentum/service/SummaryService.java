@@ -105,53 +105,53 @@ public class SummaryService {
 
     }
 
-    private SummaryDetailsDTO toSummaryDetailsDto(SummaryDetails entity) {
-        if (entity == null) {
+    private SummaryDetailsDTO toSummaryDetailsDto(SummaryDetails summaryDetailsEntity) {
+        if (summaryDetailsEntity == null) {
             return null;
         }
 
         SummaryDetailsDTO summaryDetailsDto = new SummaryDetailsDTO();
-        summaryDetailsDto.setTone(entity.getTone());
-        summaryDetailsDto.setOutcome(entity.getOutcome());
-        summaryDetailsDto.setWhatWentWell(entity.getWhatWentWell());
-        summaryDetailsDto.setWhatCouldBeImproved(entity.getWhatCouldBeImproved());
-        summaryDetailsDto.setObjectionsOrDiscoveryInsights(entity.getObjectionsOrDiscoveryInsights());
-        summaryDetailsDto.setActionPoints(entity.getActionPoints());
-        summaryDetailsDto.setAgent(entity.getAgent());
-        summaryDetailsDto.setCustomer(entity.getCustomer());
+        summaryDetailsDto.setTone(summaryDetailsEntity.getTone());
+        summaryDetailsDto.setOutcome(summaryDetailsEntity.getOutcome());
+        summaryDetailsDto.setStrengths(summaryDetailsEntity.getStrengths());
+        summaryDetailsDto.setImprovements(summaryDetailsEntity.getImprovements());
+        summaryDetailsDto.setInsights(summaryDetailsEntity.getInsights());
+        summaryDetailsDto.setActionPoints(summaryDetailsEntity.getActionPoints());
+        summaryDetailsDto.setAgent(summaryDetailsEntity.getAgent());
+        summaryDetailsDto.setCustomer(summaryDetailsEntity.getCustomer());
 
-        if (entity.getChurnRiskSignals() != null) {
+        if (summaryDetailsEntity.getChurnRiskSignals() != null) {
             SummaryDetailsDTO.ChurnRiskSignalsDTO crsDto = new SummaryDetailsDTO.ChurnRiskSignalsDTO();
-            crsDto.setRiskLevel(entity.getChurnRiskSignals().getRiskLevel());
-            crsDto.setSignals(entity.getChurnRiskSignals().getSignals());
+            crsDto.setRiskLevel(summaryDetailsEntity.getChurnRiskSignals().getRiskLevel());
+            crsDto.setSignals(summaryDetailsEntity.getChurnRiskSignals().getSignals());
             summaryDetailsDto.setChurnRiskSignals(crsDto);
         }
 
         return summaryDetailsDto;
     }
 
-    private SummaryDetails toSummaryDetailsEntity(SummaryDetailsDTO dto) {
-        if (dto == null) {
+    private SummaryDetails toSummaryDetailsEntity(SummaryDetailsDTO summaryDetailsDto) {
+        if (summaryDetailsDto == null) {
             return null;
         }
 
-        SummaryDetails entity = new SummaryDetails();
-        entity.setTone(dto.getTone());
-        entity.setOutcome(dto.getOutcome());
-        entity.setWhatWentWell(dto.getWhatWentWell());
-        entity.setWhatCouldBeImproved(dto.getWhatCouldBeImproved());
-        entity.setObjectionsOrDiscoveryInsights(dto.getObjectionsOrDiscoveryInsights());
-        entity.setActionPoints(dto.getActionPoints());
-        entity.setAgent(dto.getAgent());
-        entity.setCustomer(dto.getCustomer());
+        SummaryDetails summaryDetailsEntity = new SummaryDetails();
+        summaryDetailsEntity.setTone(summaryDetailsDto.getTone());
+        summaryDetailsEntity.setOutcome(summaryDetailsDto.getOutcome());
+        summaryDetailsEntity.setStrengths(summaryDetailsDto.getStrengths());
+        summaryDetailsEntity.setImprovements(summaryDetailsDto.getImprovements());
+        summaryDetailsEntity.setInsights(summaryDetailsDto.getInsights());
+        summaryDetailsEntity.setActionPoints(summaryDetailsDto.getActionPoints());
+        summaryDetailsEntity.setAgent(summaryDetailsDto.getAgent());
+        summaryDetailsEntity.setCustomer(summaryDetailsDto.getCustomer());
 
-        if (dto.getChurnRiskSignals() != null) {
+        if (summaryDetailsDto.getChurnRiskSignals() != null) {
             SummaryDetails.ChurnRiskSignals crs = new SummaryDetails.ChurnRiskSignals();
-            crs.setRiskLevel(dto.getChurnRiskSignals().getRiskLevel());
-            crs.setSignals(dto.getChurnRiskSignals().getSignals());
-            entity.setChurnRiskSignals(crs);
+            crs.setRiskLevel(summaryDetailsDto.getChurnRiskSignals().getRiskLevel());
+            crs.setSignals(summaryDetailsDto.getChurnRiskSignals().getSignals());
+            summaryDetailsEntity.setChurnRiskSignals(crs);
         }
 
-        return entity;
+        return summaryDetailsEntity;
     }
 }

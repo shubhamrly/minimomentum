@@ -14,31 +14,31 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SummaryDetailsDTO {
 
-    @JsonProperty("Tone")
+    @JsonProperty("tone")
     public String tone;
-    @JsonProperty("Outcome")
+    @JsonProperty("outcome")
     public String outcome;
-    @JsonProperty("WhatWentWell")
-    public List<String> whatWentWell;
-    @JsonProperty("WhatCouldBeImproved")
-    public List<String> whatCouldBeImproved;
-    @JsonProperty("ObjectionsOrDiscoveryInsights")
-    public List<String> objectionsOrDiscoveryInsights;
-    @JsonProperty("ChurnRiskSignals")
+    @JsonProperty("strengths")
+    public List<String> strengths;
+    @JsonProperty("improvements")
+    public List<String> improvements;
+    @JsonProperty("insights")
+    public List<String> Insights;
+    @JsonProperty("churnRiskSignals")
     public ChurnRiskSignalsDTO churnRiskSignals;
-    @JsonProperty("ActionPoints")
+    @JsonProperty("actionPoints")
     public List<String> actionPoints;
-    @JsonProperty("Agent")
+    @JsonProperty("agent")
     public String agent;
-    @JsonProperty("Customer")
+    @JsonProperty("customer")
     public String customer;
 
     @Data
     public static class ChurnRiskSignalsDTO {
 
-        @JsonProperty("RiskLevel")
+        @JsonProperty("riskLevel")
         public String riskLevel;
-        @JsonProperty("Signals")
+        @JsonProperty("signals")
         public List<String> signals;
     }
 }

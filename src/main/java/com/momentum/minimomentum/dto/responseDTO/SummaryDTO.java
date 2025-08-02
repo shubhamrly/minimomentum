@@ -10,9 +10,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SummaryDTO {
 
-    @JsonProperty("Summary")
+    @JsonProperty("summary")
     private String summary;
 
-    @JsonProperty("SummaryDetails")
+    @JsonProperty("summaryDetails")
     private SummaryDetailsDTO summaryDetails;
 }

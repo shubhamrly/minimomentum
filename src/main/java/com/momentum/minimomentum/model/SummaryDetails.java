@@ -17,13 +17,13 @@ public class SummaryDetails {
     private String customer;
 
     @ElementCollection
-    private List<String> whatWentWell;
+    private List<String> strengths;
 
     @ElementCollection
-    private List<String> whatCouldBeImproved;
+    private List<String> improvements;
 
     @ElementCollection
-    private List<String> objectionsOrDiscoveryInsights;
+    private List<String> Insights;
 
     @Embedded
     private ChurnRiskSignals churnRiskSignals;
