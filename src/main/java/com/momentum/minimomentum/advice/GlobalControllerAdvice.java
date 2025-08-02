@@ -1,6 +1,7 @@
 package com.momentum.minimomentum.advice;
 
 import com.momentum.minimomentum.exception.EntityNotFoundException;
+import com.momentum.minimomentum.exception.OpenAiClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,4 +29,14 @@ public class GlobalControllerAdvice {
                 .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
+    
+    // when there is an error with the OpenAI client.
+    @ExceptionHandler(OpenAiClientException.class)
+    public ResponseEntity<String> handleOpenAiClientException(OpenAiClientException e) {
+        log.error("OpenAI Client error: {}", e.getMessage());
+        return ResponseEntity
+                .internalServerError()
+                .body("OpenAI Client error: " + e.getMessage());
+    }
+
 }
