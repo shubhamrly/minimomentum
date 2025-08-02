@@ -1,19 +1,20 @@
 package com.momentum.minimomentum.service;
 
-import com.momentum.minimomentum.constant.PromptType;
+import com.momentum.minimomentum.constant.PromptConstants;
 import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
 import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.TranscriptionRepository;
 import com.momentum.minimomentum.service.openAiService.OpenAiClient;
-import com.momentum.minimomentum.utils.PromptUtils;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TranscriptionService {
@@ -23,14 +24,14 @@ public class TranscriptionService {
     private final TranscriptionRepository transcriptRepository;
 
     public TranscriptResponseDTO generateTranscript(String language) {
-        String transcriptPrompt = PromptUtils.getPrompt(PromptType.GENERATION_PROMPT, language);
+        String transcriptPrompt = PromptConstants.GENERATION_PROMPT_CONSTANT
+                .replace("%s", language)
+                .replaceAll("\\s+", " ").trim();
 
-        String spaceFormattedPrompt = transcriptPrompt.replaceAll("\\s+", " ").trim();
-
-        String content = openAiClient.getCompletionOpenAi(spaceFormattedPrompt);
+        String content = openAiClient.getCompletionOpenAi(transcriptPrompt);
 
         Transcript transcript = createAndSaveTranscripts(content, language);
-
+        log.info("[{}] Generated transcript for language: {}", getClass().getSimpleName(), language);
         return toTranscriptResponseDTO(transcript);
     }
 
@@ -39,10 +40,13 @@ public class TranscriptionService {
         transcript.setLanguage(language);
         transcript.setTranscriptText(content);
         transcript.setCreateDateTime(LocalDateTime.now());
+        log.info("[{}] Creating and saving transcript with language: {}", getClass().getSimpleName(), language);
         return transcriptRepository.save(transcript);
     }
 
     public Transcript getTranscriptById(Long id) {
+
+        log.info("[{}] Fetching transcript by id: {}", getClass().getSimpleName(), id);
         return transcriptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
 
         //return new Transcript(transcript.getId(), transcript.getTranscriptText(), transcript.getLanguage(), transcript.getCreateDateTime());
@@ -59,7 +63,7 @@ public class TranscriptionService {
         if (transcriptList.isEmpty()) {
             throw new EntityNotFoundException("No transcripts found.");
         }
-
+        log.info("[{}] Fetched {} transcripts", getClass().getSimpleName(), transcriptList.size());
         return transcriptList.stream().map(this::toTranscriptResponseDTO).collect(Collectors.toList());
     }
 

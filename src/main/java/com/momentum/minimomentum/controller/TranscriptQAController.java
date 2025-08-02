@@ -30,6 +30,9 @@ public class TranscriptQAController {
         String OpenAiAnswer = questionAnswerService.getAnswersByTranscriptId(transcriptId, question);
         TranscriptQAResponseDTO response = new TranscriptQAResponseDTO();
         response.setAnswer(OpenAiAnswer);
+
+        log.info("[{}] getAnswersByTranscriptId called with transcriptId: {}, question: {}", getClass().getSimpleName(), transcriptId, question);
+
         return ResponseEntity.ok(response);
 
     }
@@ -40,7 +43,9 @@ public class TranscriptQAController {
     )
     @GetMapping("/transcript/{transcriptId}/answers")
     public ResponseEntity<List<TranscriptQAResponseDTO>> getAllAnswersByTranscriptId(@PathVariable Long transcriptId) {
-        log.info("TranscriptQAController || getAllAnswersByTranscriptId called with transcriptId: {}", transcriptId);
+
+        log.info("[{}] Fetching all answers by transcriptId: {}", getClass().getSimpleName(), transcriptId);
+
         return ResponseEntity.ok(questionAnswerService.getAllQAByTranscriptId(transcriptId));
     }
 

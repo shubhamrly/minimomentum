@@ -9,6 +9,9 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        default_batch_fetch_size: 15
 
   ai:
     openai:
@@ -21,5 +24,12 @@ spring:
       enabled: true
       path: /h2-console
 
+
 server:
   port: 8080
+
+logging:
+    level:
+        org.springframework: INFO
+        org.hibernate.SQL: DEBUG
+        org.hibernate.type.descriptor.sql.BasicBinder: DEBUG

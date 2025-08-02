@@ -6,9 +6,10 @@ import com.momentum.minimomentum.service.SummaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@Slf4j
 @Tag(name = "2. Summariser", description = "Summary APIs")
 @RestController
 @RequestMapping("/api/v2/summariser")
@@ -22,6 +23,9 @@ public class SummariserController {
 
     @PostMapping("/summaries")
     public ResponseEntity<SummaryResponseDTO> getSummary(@RequestParam Long transcriptId, @RequestParam(value = "language", defaultValue = "english") String language) throws JsonProcessingException {
+
+        log.info("[{}] Generating summary for transcript ID: {} in language: {}", getClass().getSimpleName(), transcriptId, language);
+
         return ResponseEntity.ok(summaryService.generateSummary(transcriptId, language));
     }
 
@@ -30,6 +34,9 @@ public class SummariserController {
 
     @GetMapping("/summaries/{summaryId}")
     public ResponseEntity<?> getSummaryById(@PathVariable Long summaryId) {
+
+        log.info("[{}] Fetching summary for transcript ID: {}", getClass().getSimpleName(), summaryId);
+
         return ResponseEntity.ok(summaryService.getSummary(summaryId));
 
     }
@@ -38,6 +45,9 @@ public class SummariserController {
             description = "This endpoint retrieves all generated summaries from database. It returns a list of all summaries persisting in the database.")
     @GetMapping("/summaries")
     public ResponseEntity<?> getAllSummaries() {
+
+        log.info("[{}] Fetching All summaries", getClass().getSimpleName());
+
         return ResponseEntity.ok(summaryService.getAllSummaries());
     }
 }

@@ -2,7 +2,8 @@ package com.momentum.minimomentum.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.momentum.minimomentum.constant.PromptType;
+import com.momentum.minimomentum.constant.PromptConstants;
+
 import com.momentum.minimomentum.dto.responseDTO.SummaryDTO;
 import com.momentum.minimomentum.dto.responseDTO.SummaryDetailsDTO;
 import com.momentum.minimomentum.dto.responseDTO.SummaryResponseDTO;
@@ -12,12 +13,12 @@ import com.momentum.minimomentum.model.SummaryDetails;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.SummaryRepository;
 import com.momentum.minimomentum.service.openAiService.OpenAiClient;
-import com.momentum.minimomentum.utils.PromptUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SummaryService {
@@ -33,13 +34,15 @@ public class SummaryService {
     public SummaryResponseDTO generateSummary(Long transcriptId, String language) throws JsonProcessingException {
         Transcript transcript = generationService.getTranscriptById(transcriptId);
 
-        String summaryPrompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + "\n\n" + transcript.getTranscriptText();
+        String summaryPrompt = PromptConstants.SUMMARY_PROMPT_CONSTANT
+                .replace("%s", language)
+                .concat(transcript.getTranscriptText())
+                .replaceAll("\\s+", " ").trim();
 
-        String spaceFormattedPrompt = summaryPrompt.replaceAll("\\s+", " ").trim();
-
-        String content = openAiClient.getCompletionOpenAi(spaceFormattedPrompt);
+        String content = openAiClient.getCompletionOpenAi(summaryPrompt);
 
         Summary summary = saveOrUpdateSummary(content, transcriptId, language);
+        log.info("[{}] Generated summary for transcriptId: {}, language: {}", getClass().getSimpleName(), transcriptId, language);
         return convertToSummaryResponseDTO(summary);
     }
 
@@ -64,12 +67,14 @@ public class SummaryService {
                     newSummary.setSummaryDetails(summaryDetails);
                     return newSummary;
                 });
+        log.info("[{}] Saving summary for transcriptId: {}, language: {}", getClass().getSimpleName(), transcriptId, language);
         return summaryRepository.save(summaryObj);
     }
 
     public SummaryResponseDTO getSummary(Long summaryId) {
         Summary summary = summaryRepository.findById(summaryId)
                 .orElseThrow(() -> new EntityNotFoundException("Summary not found by id: " + summaryId));
+        log.info("[{}] Fetched summary with id: {}", getClass().getSimpleName(), summaryId);
         return convertToSummaryResponseDTO(summary);
     }
 
@@ -78,6 +83,7 @@ public class SummaryService {
         if (summaryList.isEmpty()) {
             throw new EntityNotFoundException("No summaries found.");
         }
+        log.info("[{}] Fetched {} summaries", getClass().getSimpleName(), summaryList.size());
         return summaryList.stream()
                 .map(this::convertToSummaryResponseDTO)
                 .toList();
