@@ -22,6 +22,14 @@ public class TranscriptQAController {
 
     private final QuestionAnswerService questionAnswerService;
 
+    /**
+     * Answers a question based on the generated transcript by transcriptId.
+     * Generates answers to questions based on the provided transcript ID.
+     *
+     * @param transcriptId the ID of the transcript to answer questions for
+     * @param question     the question to be answered
+     * @return a ResponseEntity containing the answer to the question
+     */
     @Operation(
             summary = "Answers question based on generated transcript by transcriptId",
             description = "Generates answers to questions based on the provided transcript ID"
@@ -29,16 +37,25 @@ public class TranscriptQAController {
 
     @PostMapping("/transcript/{transcriptId}/answer")
     public ResponseEntity<TranscriptQAResponseDTO> getAnswersByTranscriptId(@PathVariable Long transcriptId, @RequestBody String question) {
-        String OpenAiAnswer = questionAnswerService.getAnswersByTranscriptId(transcriptId, question);
-        TranscriptQAResponseDTO response = new TranscriptQAResponseDTO();
-        response.setAnswer(OpenAiAnswer);
 
         log.info("[{}] getAnswersByTranscriptId called with transcriptId: {}, question: {}", className, transcriptId, question);
+
+        String OpenAiAnswer = questionAnswerService.getAnswersByTranscriptId(transcriptId, question);
+
+        TranscriptQAResponseDTO response = new TranscriptQAResponseDTO();
+
+        response.setAnswer(OpenAiAnswer);
 
         return ResponseEntity.ok(response);
 
     }
-
+    /**
+     * Retrieves all previously asked questions and their answers by transcriptId.
+     * Fetches all previously asked questions and their answers ordered by latest dateTime based on the provided transcript ID.
+     *
+     * @param transcriptId the ID of the transcript to retrieve answers for
+     * @return a ResponseEntity containing a list of TranscriptQAResponseDTO with all questions and answers
+     */
     @Operation(
             summary = "Get all previously questions and their answers by transcriptId",
             description = "Fetches all previously asked questions and their answers ordered By Latest DateTime based on the provided transcript ID"

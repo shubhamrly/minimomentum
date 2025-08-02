@@ -1,7 +1,11 @@
 package com.momentum.minimomentum.constant;
 
+
+//This file contains constants for prompts used in the application.
 public class PromptConstants {
 
+    //System context for the AI assistant
+    // This context provides guidelines for the AI's behavior and response style during sales call transcript generation
     public static final String SYSTEM_CONTEXT_CONSTANT = """
                  -You are an AI assistant for sales call transcripts.
                  -When asked to generate call: Generate realistic calls with timestamps [HH:MM:SS], roles, and natural flow.
@@ -9,6 +13,8 @@ public class PromptConstants {
                  -To Answer Question: Answer questions strictly from transcript and QA history only—no external info.
                  -Imp: Highlight only relevant parts.
             """;
+
+    //Prompts for generating sales call transcripts. Space sanitization will be in the service layer.
 
     public static final String GENERATION_PROMPT_CONSTANT = """
                 Generate a realistic sales call transcript between a <productName> software product (CRM, HRM, IMS,HM,etc) salesperson and a retail client.
@@ -21,6 +27,7 @@ public class PromptConstants {
                 [00:01:25] Mr Smith (Customer - Manager XYZ Inc): I'm doing well, thanks. What can I help you with?
                 [00:01:30] Thalia M (Sales Agent - ABC Corp): I wanted to discuss how our CRM solution can help streamline your sales process.
             """;
+    // This prompt is used to summarize the sales call transcript in a fixed structured JSON format.
 
     public static final String SUMMARY_PROMPT_CONSTANT = """
             You are a sales assistant. Summarize the sales call transcript in compact JSON.
@@ -49,6 +56,8 @@ public class PromptConstants {
          
             Transcript:
             """;
+
+    //For question and answer generation on transcripts.
     public static final String QUESTION_ANSWER_PROMPT_CONSTANT = """
         You are a sales assistant. Answer the question based on the provided transcript.
         - Use only the information from the transcript and question and answer history available with it to answer the question.
