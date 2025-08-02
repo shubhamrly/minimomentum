@@ -11,7 +11,7 @@ import com.momentum.minimomentum.model.Summary;
 import com.momentum.minimomentum.model.SummaryDetails;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.SummaryRepository;
-import com.momentum.minimomentum.service.openAi.OpenAiClient;
+import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class SummaryService {
     public SummaryResponseDTO generateSummary(Long transcriptId, String language) throws JsonProcessingException {
         Transcript transcript = generationService.getTranscriptById(transcriptId);
         String prompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + "\n\n" + transcript.getTranscriptText();
-        String content = openAiClient.getCompletion(prompt);
+        String content = openAiClient.getCompletionOpenAi(prompt);
 
         Summary summary = saveOrUpdateSummary(content, transcriptId, language);
         return convertToSummaryResponseDTO(summary);

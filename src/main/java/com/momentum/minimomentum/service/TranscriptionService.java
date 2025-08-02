@@ -6,7 +6,7 @@ import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
 import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.TranscriptionRepository;
-import com.momentum.minimomentum.service.openAi.OpenAiClient;
+import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class TranscriptionService {
 
     public TranscriptResponseDTO generateTranscript(String language) {
         String prompt = PromptUtils.getPrompt(PromptType.GENERATION_PROMPT, language);
-        String content = openAiClient.getCompletion(prompt);
+        String content = openAiClient.getCompletionOpenAi(prompt);
         Transcript transcript = createAndSaveTranscripts(content, language);
         return toTranscriptResponseDTO(transcript);
     }

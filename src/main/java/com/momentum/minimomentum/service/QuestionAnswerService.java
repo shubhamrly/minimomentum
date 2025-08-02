@@ -6,7 +6,7 @@ import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.QuestionAnswer;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.QuestionAnswersRepository;
-import com.momentum.minimomentum.service.openAi.OpenAiClient;
+import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class QuestionAnswerService {
                 question
         );
 
-        String content = openAiClient.getCompletion(promptWithHistory);
+        String content = openAiClient.getCompletionOpenAi(promptWithHistory);
         log.info(" QuestionAnswerService || Prompt length : {}  and response length {}", prompt.length(), content.length());
         return createAndSaveQuestionAnswer(transcriptId, question, content).getAnswer();
     }
