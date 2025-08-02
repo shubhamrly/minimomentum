@@ -4,6 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO for the response of a summary request.
+ * Contains the summary ID, summary text, detailed summary information,
+ * transcript ID, and language of the summary.
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

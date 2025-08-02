@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+/**
+ * DTO for summarizing a transcript.
+ * Contains the summary text and detailed summary information.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
