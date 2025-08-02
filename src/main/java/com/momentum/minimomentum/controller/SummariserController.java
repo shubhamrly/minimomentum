@@ -5,15 +5,16 @@ import com.momentum.minimomentum.dto.responseDTO.SummaryResponseDTO;
 import com.momentum.minimomentum.service.SummaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 @Tag(name = "2. Summariser", description = "Summary APIs")
 @RestController
 @RequestMapping("/api/v2/summariser")
+@RequiredArgsConstructor
 public class SummariserController {
-    @Autowired
-    SummaryService summaryService;
+
+    private final SummaryService summaryService;
 
     @Operation(summary = "Generate a summary of the transcript by its transcript ID and specified language",
        description = "This endpoint generates a summary for the transcript by its transcriptID. If no language is provided, it defaults to English.")

@@ -8,7 +8,7 @@ import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.TranscriptionRepository;
 import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,11 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TranscriptionService {
-    @Autowired
-    private OpenAiClient openAiClient;
-    @Autowired
-    private TranscriptionRepository transcriptRepository;
+
+    private final OpenAiClient openAiClient;
+
+    private final TranscriptionRepository transcriptRepository;
 
 
 

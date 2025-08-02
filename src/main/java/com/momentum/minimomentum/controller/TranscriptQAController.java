@@ -4,8 +4,8 @@ import com.momentum.minimomentum.dto.responseDTO.TranscriptQAResponseDTO;
 import com.momentum.minimomentum.service.QuestionAnswerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +14,11 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/v2/transcriptions")
+@RequiredArgsConstructor
 public class TranscriptQAController {
 
-    @Autowired
-    QuestionAnswerService questionAnswerService;
+
+    private final QuestionAnswerService questionAnswerService;
     @Operation(
             summary = "Answers question based on generated transcript by transcriptId",
             description = "Generates answers to questions based on the provided transcript ID"

@@ -4,17 +4,18 @@ import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
 import com.momentum.minimomentum.service.TranscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 @Tag(name = "1. Transcription", description = "Transcript APIs")
 @Slf4j
 @RestController
 @RequestMapping("/api/v2/transcriptions")
+@RequiredArgsConstructor
 public class TranscriptionController {
-    @Autowired
-    TranscriptionService generationService;
+
+   private final TranscriptionService generationService;
 
     @Operation(summary = "Generate a transcript based on the provided language",
     description = "This endpoint generates a transcript in the specific language, defaults to English if provided none.")

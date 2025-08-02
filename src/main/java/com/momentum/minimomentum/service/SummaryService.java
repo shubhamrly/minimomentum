@@ -13,22 +13,23 @@ import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.SummaryRepository;
 import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SummaryService {
 
-    @Autowired
-    private TranscriptionService generationService;
-    @Autowired
-    private OpenAiClient openAiClient;
-    @Autowired
-    private SummaryRepository summaryRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
+
+    private final TranscriptionService generationService;
+
+    private final OpenAiClient openAiClient;
+
+    private final SummaryRepository summaryRepository;
+
+    private final ObjectMapper objectMapper;
 
     public SummaryResponseDTO generateSummary(Long transcriptId, String language) throws JsonProcessingException {
         Transcript transcript = generationService.getTranscriptById(transcriptId);
@@ -99,24 +100,24 @@ public class SummaryService {
     private SummaryDetailsDTO toSummaryDetailsDto(SummaryDetails entity) {
         if (entity == null) return null;
 
-        SummaryDetailsDTO dto = new SummaryDetailsDTO();
-        dto.setTone(entity.getTone());
-        dto.setOutcome(entity.getOutcome());
-        dto.setWhatWentWell(entity.getWhatWentWell());
-        dto.setWhatCouldBeImproved(entity.getWhatCouldBeImproved());
-        dto.setObjectionsOrDiscoveryInsights(entity.getObjectionsOrDiscoveryInsights());
-        dto.setActionPoints(entity.getActionPoints());
-        dto.setAgent(entity.getAgent());
-        dto.setCustomer(entity.getCustomer());
+        SummaryDetailsDTO summaryDetailsDto = new SummaryDetailsDTO();
+        summaryDetailsDto.setTone(entity.getTone());
+        summaryDetailsDto.setOutcome(entity.getOutcome());
+        summaryDetailsDto.setWhatWentWell(entity.getWhatWentWell());
+        summaryDetailsDto.setWhatCouldBeImproved(entity.getWhatCouldBeImproved());
+        summaryDetailsDto.setObjectionsOrDiscoveryInsights(entity.getObjectionsOrDiscoveryInsights());
+        summaryDetailsDto.setActionPoints(entity.getActionPoints());
+        summaryDetailsDto.setAgent(entity.getAgent());
+        summaryDetailsDto.setCustomer(entity.getCustomer());
 
         if (entity.getChurnRiskSignals() != null) {
             SummaryDetailsDTO.ChurnRiskSignalsDTO crsDto = new SummaryDetailsDTO.ChurnRiskSignalsDTO();
             crsDto.setRiskLevel(entity.getChurnRiskSignals().getRiskLevel());
             crsDto.setSignals(entity.getChurnRiskSignals().getSignals());
-            dto.setChurnRiskSignals(crsDto);
+            summaryDetailsDto.setChurnRiskSignals(crsDto);
         }
 
-        return dto;
+        return summaryDetailsDto;
     }
 
 

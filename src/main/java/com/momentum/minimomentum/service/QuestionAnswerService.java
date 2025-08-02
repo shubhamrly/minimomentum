@@ -8,8 +8,8 @@ import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.QuestionAnswersRepository;
 import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,13 +17,14 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class QuestionAnswerService {
-    @Autowired
-    TranscriptionService generationService;
-    @Autowired
-    QuestionAnswersRepository questionAnswersRepository;
-    @Autowired
-    OpenAiClient openAiClient;
+
+    private final TranscriptionService generationService;
+
+    private final QuestionAnswersRepository questionAnswersRepository;
+
+    private final OpenAiClient openAiClient;
 
     public String getAnswersByTranscriptId(Long transcriptId, String question) {
 
