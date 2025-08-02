@@ -18,6 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TranscriptionController {
 
+    private final String className = getClass().getSimpleName();
+
     private final TranscriptionService generationService;
 
     @Operation(summary = "Generate a transcript based on the provided language",
@@ -26,7 +28,7 @@ public class TranscriptionController {
     @PostMapping("/transcripts")
     public ResponseEntity<TranscriptResponseDTO> generateTranscript(@RequestParam(value = "language", defaultValue = "english") String language) {
 
-       log.info("[{}] Generating transcript in language: {}", getClass().getSimpleName(), language);
+       log.info("[{}] Generating transcript in language: {}", className, language);
 
         return ResponseEntity.ok(generationService.generateTranscript(language));
 
@@ -37,7 +39,7 @@ public class TranscriptionController {
 
     @GetMapping("/transcripts/{transcriptId}")
     public ResponseEntity<TranscriptResponseDTO> getTranscriptById(@PathVariable Long transcriptId) {
-       log.info("[{}] Fetching transcript for ID: {}", getClass().getSimpleName(), transcriptId);
+       log.info("[{}] Fetching transcript for ID: {}", className, transcriptId);
         return ResponseEntity.ok(generationService.getTranscriptDtoById(transcriptId));
     }
 
@@ -47,7 +49,7 @@ public class TranscriptionController {
     @GetMapping("/transcripts")
     public ResponseEntity<List<TranscriptResponseDTO>> getAllTranscripts() {
 
-        log.info("[{}] Fetching all transcripts", getClass().getSimpleName());
+        log.info("[{}] Fetching all transcripts", className);
 
         return ResponseEntity.ok(generationService.getAllTranscripts());
     }

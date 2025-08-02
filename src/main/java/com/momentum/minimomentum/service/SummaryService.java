@@ -31,6 +31,8 @@ public class SummaryService {
 
     private final ObjectMapper objectMapper;
 
+    private final String className = getClass().getSimpleName();
+
     public SummaryResponseDTO generateSummary(Long transcriptId, String language) throws JsonProcessingException {
         Transcript transcript = generationService.getTranscriptById(transcriptId);
 
@@ -42,7 +44,7 @@ public class SummaryService {
         String content = openAiClient.getCompletionOpenAi(summaryPrompt);
 
         Summary summary = saveOrUpdateSummary(content, transcriptId, language);
-        log.info("[{}] Generated summary for transcriptId: {}, language: {}", getClass().getSimpleName(), transcriptId, language);
+        log.info("[{}] Generated summary for transcriptId: {}, language: {}", className, transcriptId, language);
         return convertToSummaryResponseDTO(summary);
     }
 
@@ -67,14 +69,14 @@ public class SummaryService {
                     newSummary.setSummaryDetails(summaryDetails);
                     return newSummary;
                 });
-        log.info("[{}] Saving summary for transcriptId: {}, language: {}", getClass().getSimpleName(), transcriptId, language);
+        log.info("[{}] Saving summary for transcriptId: {}, language: {}", className, transcriptId, language);
         return summaryRepository.save(summaryObj);
     }
 
     public SummaryResponseDTO getSummary(Long summaryId) {
         Summary summary = summaryRepository.findById(summaryId)
                 .orElseThrow(() -> new EntityNotFoundException("Summary not found by id: " + summaryId));
-        log.info("[{}] Fetched summary with id: {}", getClass().getSimpleName(), summaryId);
+        log.info("[{}] Fetched summary with id: {}", className, summaryId);
         return convertToSummaryResponseDTO(summary);
     }
 
@@ -83,7 +85,7 @@ public class SummaryService {
         if (summaryList.isEmpty()) {
             throw new EntityNotFoundException("No summaries found.");
         }
-        log.info("[{}] Fetched {} summaries", getClass().getSimpleName(), summaryList.size());
+        log.info("[{}] Fetched {} summaries", className, summaryList.size());
         return summaryList.stream()
                 .map(this::convertToSummaryResponseDTO)
                 .toList();

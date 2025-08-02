@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v2/summariser")
 @RequiredArgsConstructor
 public class SummariserController {
+    private final String className = getClass().getSimpleName();
 
     private final SummaryService summaryService;
 
@@ -24,7 +25,7 @@ public class SummariserController {
     @PostMapping("/summaries")
     public ResponseEntity<SummaryResponseDTO> getSummary(@RequestParam Long transcriptId, @RequestParam(value = "language", defaultValue = "english") String language) throws JsonProcessingException {
 
-        log.info("[{}] Generating summary for transcript ID: {} in language: {}", getClass().getSimpleName(), transcriptId, language);
+        log.info("[{}] Generating summary for transcript ID: {} in language: {}", className, transcriptId, language);
 
         return ResponseEntity.ok(summaryService.generateSummary(transcriptId, language));
     }
@@ -35,7 +36,7 @@ public class SummariserController {
     @GetMapping("/summaries/{summaryId}")
     public ResponseEntity<?> getSummaryById(@PathVariable Long summaryId) {
 
-        log.info("[{}] Fetching summary for transcript ID: {}", getClass().getSimpleName(), summaryId);
+        log.info("[{}] Fetching summary for transcript ID: {}", className, summaryId);
 
         return ResponseEntity.ok(summaryService.getSummary(summaryId));
 
@@ -46,7 +47,7 @@ public class SummariserController {
     @GetMapping("/summaries")
     public ResponseEntity<?> getAllSummaries() {
 
-        log.info("[{}] Fetching All summaries", getClass().getSimpleName());
+        log.info("[{}] Fetching All summaries", className);
 
         return ResponseEntity.ok(summaryService.getAllSummaries());
     }

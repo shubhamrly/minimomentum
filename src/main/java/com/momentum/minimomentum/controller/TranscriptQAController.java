@@ -18,6 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TranscriptQAController {
 
+    private final String className = getClass().getSimpleName();
+
     private final QuestionAnswerService questionAnswerService;
 
     @Operation(
@@ -31,7 +33,7 @@ public class TranscriptQAController {
         TranscriptQAResponseDTO response = new TranscriptQAResponseDTO();
         response.setAnswer(OpenAiAnswer);
 
-        log.info("[{}] getAnswersByTranscriptId called with transcriptId: {}, question: {}", getClass().getSimpleName(), transcriptId, question);
+        log.info("[{}] getAnswersByTranscriptId called with transcriptId: {}, question: {}", className, transcriptId, question);
 
         return ResponseEntity.ok(response);
 
@@ -44,7 +46,7 @@ public class TranscriptQAController {
     @GetMapping("/transcript/{transcriptId}/answers")
     public ResponseEntity<List<TranscriptQAResponseDTO>> getAllAnswersByTranscriptId(@PathVariable Long transcriptId) {
 
-        log.info("[{}] Fetching all answers by transcriptId: {}", getClass().getSimpleName(), transcriptId);
+        log.info("[{}] Fetching all answers by transcriptId: {}", className, transcriptId);
 
         return ResponseEntity.ok(questionAnswerService.getAllQAByTranscriptId(transcriptId));
     }

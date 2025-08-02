@@ -26,6 +26,8 @@ public class QuestionAnswerService {
 
     private final OpenAiClient openAiClient;
 
+    private final String className = getClass().getSimpleName();
+
     public String getAnswersByTranscriptId(Long transcriptId, String question) {
 
         String transcriptText = generationService.getTranscriptById(transcriptId).getTranscriptText();
@@ -45,7 +47,7 @@ public class QuestionAnswerService {
 
         String content = openAiClient.getCompletionOpenAi(promptWithHistory);
 
-        log.info("[{}] Generated answer for question: {}", getClass().getSimpleName(), question);
+        log.info("[{}] Generated answer for question: {}", className , question);
 
         return createAndSaveQuestionAnswer(transcriptId, question, content).getAnswer();
     }
@@ -54,7 +56,7 @@ public class QuestionAnswerService {
 
         List<QuestionAnswer> questionAnswers = questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(transcriptId);
 
-        log.debug("[{}] [Internal] Fetched {} question answers for transcriptId: {}", getClass().getSimpleName(), questionAnswers.size(), transcriptId);
+        log.debug("[{}] [Internal] Fetched {} question answers for transcriptId: {}", className, questionAnswers.size(), transcriptId);
 
         return toTranscriptQAResponseDTOList(questionAnswers);
     }
@@ -64,7 +66,7 @@ public class QuestionAnswerService {
         if (questionAnswers.isEmpty()) {
             throw new EntityNotFoundException("No question answers found for transcriptId: " + transcriptId);
         }
-        log.info("[{}] Returning {} question answers for transcriptId: {}", getClass().getSimpleName(), questionAnswers.size(), transcriptId);
+        log.info("[{}] Returning {} question answers for transcriptId: {}", className, questionAnswers.size(), transcriptId);
         return questionAnswers;
     }
 
@@ -75,7 +77,7 @@ public class QuestionAnswerService {
         questionAnswer.setQuestion(question);
         questionAnswer.setAnswer(answer);
         questionAnswer.setCreateDateTime(LocalDateTime.now());
-        log.info("[{}] Saving question answer for transcriptId: {}, question: {}", getClass().getSimpleName(), transcriptId, question);
+        log.info("[{}] Saving question answer for transcriptId: {}, question: {}", className, transcriptId, question);
         return questionAnswersRepository.save(questionAnswer);
     }
 

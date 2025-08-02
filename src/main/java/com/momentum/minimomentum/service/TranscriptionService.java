@@ -23,6 +23,8 @@ public class TranscriptionService {
 
     private final TranscriptionRepository transcriptRepository;
 
+    private final String className = getClass().getSimpleName();
+    
     public TranscriptResponseDTO generateTranscript(String language) {
         String transcriptPrompt = PromptConstants.GENERATION_PROMPT_CONSTANT
                 .replace("%s", language)
@@ -31,7 +33,7 @@ public class TranscriptionService {
         String content = openAiClient.getCompletionOpenAi(transcriptPrompt);
 
         Transcript transcript = createAndSaveTranscripts(content, language);
-        log.info("[{}] Generated transcript for language: {}", getClass().getSimpleName(), language);
+        log.info("[{}] Generated transcript for language: {}", className, language);
         return toTranscriptResponseDTO(transcript);
     }
 
@@ -40,13 +42,13 @@ public class TranscriptionService {
         transcript.setLanguage(language);
         transcript.setTranscriptText(content);
         transcript.setCreateDateTime(LocalDateTime.now());
-        log.info("[{}] Creating and saving transcript with language: {}", getClass().getSimpleName(), language);
+        log.info("[{}] Creating and saving transcript with language: {}", className, language);
         return transcriptRepository.save(transcript);
     }
 
     public Transcript getTranscriptById(Long id) {
 
-        log.info("[{}] Fetching transcript by id: {}", getClass().getSimpleName(), id);
+        log.info("[{}] Fetching transcript by id: {}", className, id);
         return transcriptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
 
         //return new Transcript(transcript.getId(), transcript.getTranscriptText(), transcript.getLanguage(), transcript.getCreateDateTime());
@@ -63,7 +65,7 @@ public class TranscriptionService {
         if (transcriptList.isEmpty()) {
             throw new EntityNotFoundException("No transcripts found.");
         }
-        log.info("[{}] Fetched {} transcripts", getClass().getSimpleName(), transcriptList.size());
+        log.info("[{}] Fetched {} transcripts", className, transcriptList.size());
         return transcriptList.stream().map(this::toTranscriptResponseDTO).collect(Collectors.toList());
     }
 
