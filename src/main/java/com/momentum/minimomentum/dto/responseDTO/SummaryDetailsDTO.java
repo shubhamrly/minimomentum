@@ -7,6 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+/*
+    * DTO for detailed summary information.
+    * Contains various fields such as tone, outcome, strengths, improvements,
+    * insights, churn risk signals, action points, agent, and customer.
+    * The ChurnRiskSignalsDTO is an inner class that holds risk level and signals.
+    * This class is used to encapsulate the detailed summary information
+ */
 
 @Data
 @AllArgsConstructor
@@ -14,31 +21,31 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SummaryDetailsDTO {
 
-    @JsonProperty("Tone")
+    @JsonProperty("tone")
     public String tone;
-    @JsonProperty("Outcome")
+    @JsonProperty("outcome")
     public String outcome;
-    @JsonProperty("WhatWentWell")
-    public List<String> whatWentWell;
-    @JsonProperty("WhatCouldBeImproved")
-    public List<String> whatCouldBeImproved;
-    @JsonProperty("ObjectionsOrDiscoveryInsights")
-    public List<String> objectionsOrDiscoveryInsights;
-    @JsonProperty("ChurnRiskSignals")
+    @JsonProperty("strengths")
+    public List<String> strengths;
+    @JsonProperty("improvements")
+    public List<String> improvements;
+    @JsonProperty("insights")
+    public List<String> Insights;
+    @JsonProperty("churnRiskSignals")
     public ChurnRiskSignalsDTO churnRiskSignals;
-    @JsonProperty("ActionPoints")
+    @JsonProperty("actionPoints")
     public List<String> actionPoints;
-    @JsonProperty("Agent")
+    @JsonProperty("agent")
     public String agent;
-    @JsonProperty("Customer")
+    @JsonProperty("customer")
     public String customer;
 
     @Data
     public static class ChurnRiskSignalsDTO {
 
-        @JsonProperty("RiskLevel")
+        @JsonProperty("riskLevel")
         public String riskLevel;
-        @JsonProperty("Signals")
+        @JsonProperty("signals")
         public List<String> signals;
     }
 }

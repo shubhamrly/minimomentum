@@ -5,14 +5,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+/**
+ * DTO for summarizing a transcript.
+ * Contains the summary text and detailed summary information.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class SummaryDTO {
 
-    @JsonProperty("Summary")
+    @JsonProperty("summary")
     private String summary;
 
-    @JsonProperty("SummaryDetails")
+    @JsonProperty("summaryDetails")
     private SummaryDetailsDTO summaryDetails;
 }
