@@ -5,4 +5,3 @@ public enum PromptType {
     SUMMARY_PROMPT,
     QUESTION_ANSWERING_PROMPT
 }
-

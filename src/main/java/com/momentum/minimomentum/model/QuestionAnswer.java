@@ -31,4 +31,3 @@ public class QuestionAnswer {
     private Transcript transcript;
 
 }
-

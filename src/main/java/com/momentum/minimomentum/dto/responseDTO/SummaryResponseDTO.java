@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SummaryResponseDTO {
+
     private Long summaryId;
     private String summaryText;
     private SummaryDetailsDTO summaryDetails;

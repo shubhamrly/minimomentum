@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalControllerAdvice {
+
     @ExceptionHandler({PromptNotFoundException.class})
     public ResponseEntity<String> handlePromptNotFoundException(Exception e) {
         return ResponseEntity
                 .internalServerError()
                 .body("Prompt not found: " + e.getMessage());
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {
         return ResponseEntity

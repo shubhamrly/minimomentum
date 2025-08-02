@@ -11,7 +11,6 @@ import java.util.List;
 @Embeddable
 public class SummaryDetails {
 
-
     private String tone;
     private String outcome;
     private String agent;
@@ -35,6 +34,7 @@ public class SummaryDetails {
     @Embeddable
     @Data
     public static class ChurnRiskSignals {
+
         private String riskLevel;
 
         @ElementCollection

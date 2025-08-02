@@ -11,29 +11,29 @@ import com.momentum.minimomentum.model.Summary;
 import com.momentum.minimomentum.model.SummaryDetails;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.SummaryRepository;
-import com.momentum.minimomentum.service.openAi.OpenAiClient;
+import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SummaryService {
 
-    @Autowired
-    private TranscriptionService generationService;
-    @Autowired
-    private OpenAiClient openAiClient;
-    @Autowired
-    private SummaryRepository summaryRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final TranscriptionService generationService;
+
+    private final OpenAiClient openAiClient;
+
+    private final SummaryRepository summaryRepository;
+
+    private final ObjectMapper objectMapper;
 
     public SummaryResponseDTO generateSummary(Long transcriptId, String language) throws JsonProcessingException {
         Transcript transcript = generationService.getTranscriptById(transcriptId);
         String prompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + "\n\n" + transcript.getTranscriptText();
-        String content = openAiClient.getCompletion(prompt);
+        String content = openAiClient.getCompletionOpenAi(prompt);
 
         Summary summary = saveOrUpdateSummary(content, transcriptId, language);
         return convertToSummaryResponseDTO(summary);
@@ -45,7 +45,7 @@ public class SummaryService {
         String summaryText = wrapper.getSummary();
         SummaryDetails summaryDetails = toSummaryDetailsEntity(wrapper.getSummaryDetails());
 
-         Summary summaryObj = summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
+        Summary summaryObj = summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
                 .map(existing -> {
                     existing.setSummaryText(summaryText);
                     existing.setSummaryDetails(summaryDetails);
@@ -62,8 +62,6 @@ public class SummaryService {
                 });
         return summaryRepository.save(summaryObj);
     }
-
-
 
     public SummaryResponseDTO getSummary(Long summaryId) {
         Summary summary = summaryRepository.findById(summaryId)
@@ -95,33 +93,35 @@ public class SummaryService {
 
     }
 
-
     private SummaryDetailsDTO toSummaryDetailsDto(SummaryDetails entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
 
-        SummaryDetailsDTO dto = new SummaryDetailsDTO();
-        dto.setTone(entity.getTone());
-        dto.setOutcome(entity.getOutcome());
-        dto.setWhatWentWell(entity.getWhatWentWell());
-        dto.setWhatCouldBeImproved(entity.getWhatCouldBeImproved());
-        dto.setObjectionsOrDiscoveryInsights(entity.getObjectionsOrDiscoveryInsights());
-        dto.setActionPoints(entity.getActionPoints());
-        dto.setAgent(entity.getAgent());
-        dto.setCustomer(entity.getCustomer());
+        SummaryDetailsDTO summaryDetailsDto = new SummaryDetailsDTO();
+        summaryDetailsDto.setTone(entity.getTone());
+        summaryDetailsDto.setOutcome(entity.getOutcome());
+        summaryDetailsDto.setWhatWentWell(entity.getWhatWentWell());
+        summaryDetailsDto.setWhatCouldBeImproved(entity.getWhatCouldBeImproved());
+        summaryDetailsDto.setObjectionsOrDiscoveryInsights(entity.getObjectionsOrDiscoveryInsights());
+        summaryDetailsDto.setActionPoints(entity.getActionPoints());
+        summaryDetailsDto.setAgent(entity.getAgent());
+        summaryDetailsDto.setCustomer(entity.getCustomer());
 
         if (entity.getChurnRiskSignals() != null) {
             SummaryDetailsDTO.ChurnRiskSignalsDTO crsDto = new SummaryDetailsDTO.ChurnRiskSignalsDTO();
             crsDto.setRiskLevel(entity.getChurnRiskSignals().getRiskLevel());
             crsDto.setSignals(entity.getChurnRiskSignals().getSignals());
-            dto.setChurnRiskSignals(crsDto);
+            summaryDetailsDto.setChurnRiskSignals(crsDto);
         }
 
-        return dto;
+        return summaryDetailsDto;
     }
 
-
     private SummaryDetails toSummaryDetailsEntity(SummaryDetailsDTO dto) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
 
         SummaryDetails entity = new SummaryDetails();
         entity.setTone(dto.getTone());

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Transcript {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

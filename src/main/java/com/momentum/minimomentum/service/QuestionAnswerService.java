@@ -6,10 +6,10 @@ import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.QuestionAnswer;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.QuestionAnswersRepository;
-import com.momentum.minimomentum.service.openAi.OpenAiClient;
+import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,13 +17,14 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class QuestionAnswerService {
-    @Autowired
-    TranscriptionService generationService;
-    @Autowired
-    QuestionAnswersRepository questionAnswersRepository;
-    @Autowired
-    OpenAiClient openAiClient;
+
+    private final TranscriptionService generationService;
+
+    private final QuestionAnswersRepository questionAnswersRepository;
+
+    private final OpenAiClient openAiClient;
 
     public String getAnswersByTranscriptId(Long transcriptId, String question) {
 
@@ -43,7 +44,7 @@ public class QuestionAnswerService {
                 question
         );
 
-        String content = openAiClient.getCompletion(promptWithHistory);
+        String content = openAiClient.getCompletionOpenAi(promptWithHistory);
         log.info(" QuestionAnswerService || Prompt length : {}  and response length {}", prompt.length(), content.length());
         return createAndSaveQuestionAnswer(transcriptId, question, content).getAnswer();
     }
@@ -54,7 +55,7 @@ public class QuestionAnswerService {
     }
 
     public List<TranscriptQAResponseDTO> getAllQAByTranscriptId(Long transcriptId) {
-        List<TranscriptQAResponseDTO> questionAnswers =  getAllQAByTranscriptIdInternal(transcriptId);
+        List<TranscriptQAResponseDTO> questionAnswers = getAllQAByTranscriptIdInternal(transcriptId);
         if (questionAnswers.isEmpty()) {
             log.info("No question answers found for transcriptId: {}", transcriptId);
             throw new EntityNotFoundException("No question answers found for transcriptId: " + transcriptId);
@@ -71,6 +72,7 @@ public class QuestionAnswerService {
         questionAnswer.setCreateDateTime(LocalDateTime.now());
         return questionAnswersRepository.save(questionAnswer);
     }
+
     public TranscriptQAResponseDTO toTranscriptQAResponseDTO(QuestionAnswer questionAnswer) {
         TranscriptQAResponseDTO responseDTO = new TranscriptQAResponseDTO();
         responseDTO.setId(String.valueOf(questionAnswer.getId()));
@@ -80,6 +82,7 @@ public class QuestionAnswerService {
         responseDTO.setCreateDateTime(questionAnswer.getCreateDateTime());
         return responseDTO;
     }
+
     public List<TranscriptQAResponseDTO> toTranscriptQAResponseDTOList(List<QuestionAnswer> questionAnswerList) {
         return questionAnswerList.stream()
                 .map(this::toTranscriptQAResponseDTO)

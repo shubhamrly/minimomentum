@@ -1,14 +1,13 @@
 package com.momentum.minimomentum.service;
 
-
 import com.momentum.minimomentum.constant.PromptType;
 import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
 import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.TranscriptionRepository;
-import com.momentum.minimomentum.service.openAi.OpenAiClient;
+import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import com.momentum.minimomentum.utils.PromptUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,17 +15,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TranscriptionService {
-    @Autowired
-    private OpenAiClient openAiClient;
-    @Autowired
-    private TranscriptionRepository transcriptRepository;
 
+    private final OpenAiClient openAiClient;
 
+    private final TranscriptionRepository transcriptRepository;
 
     public TranscriptResponseDTO generateTranscript(String language) {
         String prompt = PromptUtils.getPrompt(PromptType.GENERATION_PROMPT, language);
-        String content = openAiClient.getCompletion(prompt);
+        String content = openAiClient.getCompletionOpenAi(prompt);
         Transcript transcript = createAndSaveTranscripts(content, language);
         return toTranscriptResponseDTO(transcript);
     }
@@ -40,7 +38,9 @@ public class TranscriptionService {
     }
 
     public Transcript getTranscriptById(Long id) {
-       return  transcriptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
+        return transcriptRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
+
         //return new Transcript(transcript.getId(), transcript.getTranscriptText(), transcript.getLanguage(), transcript.getCreateDateTime());
     }
 
@@ -57,7 +57,7 @@ public class TranscriptionService {
         }
 
         return transcriptList.stream()
-                .map(t -> new TranscriptResponseDTO(t.getId(), t.getTranscriptText(), t.getLanguage(), t.getCreateDateTime()))
+                .map(this::toTranscriptResponseDTO)
                 .collect(Collectors.toList());
     }
 
@@ -70,6 +70,3 @@ public class TranscriptionService {
         return responseDto;
     }
 }
-
-
-
