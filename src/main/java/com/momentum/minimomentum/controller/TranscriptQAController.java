@@ -3,16 +3,17 @@ package com.momentum.minimomentum.controller;
 import com.momentum.minimomentum.dto.responseDTO.TranscriptQAResponseDTO;
 import com.momentum.minimomentum.service.QuestionAnswerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Tag(name = "3. Question Answer", description = "Question Answer APIs")
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/transcriptions")
+@RequestMapping("/api/v2/transcriptions")
 public class TranscriptQAController {
 
     @Autowired
@@ -22,7 +23,7 @@ public class TranscriptQAController {
             description = "Generates answers to questions based on the provided transcript ID"
     )
 
-    @PostMapping("answers/{transcriptId}")
+    @PostMapping("/transcript/{transcriptId}/answer")
     public ResponseEntity<TranscriptQAResponseDTO> getAnswersByTranscriptId(@PathVariable Long transcriptId, @RequestBody String question) {
         String  OpenAiAnswer =  questionAnswerService.getAnswersByTranscriptId(transcriptId, question);
         TranscriptQAResponseDTO response = new TranscriptQAResponseDTO();
@@ -32,9 +33,9 @@ public class TranscriptQAController {
     }
     @Operation(
             summary = "Get all previously questions and their answers by transcriptId",
-            description = "Fetches all previously asked questions and their answers based on the provided transcript ID"
+            description = "Fetches all previously asked questions and their answers ordered By Latest DateTime based on the provided transcript ID"
     )
-    @GetMapping("getAllAnswersById/{transcriptId}")
+    @GetMapping("/transcript/{transcriptId}/answers")
     public ResponseEntity<List<TranscriptQAResponseDTO>> getAllAnswersByTranscriptId(@PathVariable Long transcriptId) {
         log.info("TranscriptQAController || getAllAnswersByTranscriptId called with transcriptId: {}", transcriptId);
         return ResponseEntity.ok(questionAnswerService.getAllQAByTranscriptId(transcriptId));
