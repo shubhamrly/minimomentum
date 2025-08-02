@@ -3,7 +3,6 @@ package com.momentum.minimomentum.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.momentum.minimomentum.constant.PromptConstants;
-
 import com.momentum.minimomentum.dto.responseDTO.SummaryDTO;
 import com.momentum.minimomentum.dto.responseDTO.SummaryDetailsDTO;
 import com.momentum.minimomentum.dto.responseDTO.SummaryResponseDTO;
@@ -16,8 +15,15 @@ import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+
+/**
+ * SummaryService is responsible for generating and managing summaries of transcripts.
+ * It interacts with the OpenAI API to generate summaries based on the transcript text
+ * and provides methods to retrieve, save, and update summaries.
+ */
+
+
 @Slf4j
 @Service
 @RequiredArgsConstructor

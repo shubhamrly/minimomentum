@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a transcript.
+ * Contains the transcript text, language, and creation date-time.
+ */
+
 @Entity
 @Table(name = "transcripts")
 @Data

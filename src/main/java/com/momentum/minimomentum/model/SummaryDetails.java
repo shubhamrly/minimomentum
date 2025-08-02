@@ -7,6 +7,12 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * Entity representing detailed summary information of a transcript.
+ * Contains tone, outcome, agent, customer details, strengths, improvements,
+ * insights, churn risk signals, and action points.
+ */
+
 @Data
 @Embeddable
 public class SummaryDetails {
