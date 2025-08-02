@@ -32,8 +32,12 @@ public class SummaryService {
 
     public SummaryResponseDTO generateSummary(Long transcriptId, String language) throws JsonProcessingException {
         Transcript transcript = generationService.getTranscriptById(transcriptId);
-        String prompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + "\n\n" + transcript.getTranscriptText();
-        String content = openAiClient.getCompletionOpenAi(prompt);
+
+        String summaryPrompt = PromptUtils.getPrompt(PromptType.SUMMARY_PROMPT, language) + "\n\n" + transcript.getTranscriptText();
+
+        String spaceFormattedPrompt = summaryPrompt.replaceAll("\\s+", " ").trim();
+
+        String content = openAiClient.getCompletionOpenAi(spaceFormattedPrompt);
 
         Summary summary = saveOrUpdateSummary(content, transcriptId, language);
         return convertToSummaryResponseDTO(summary);

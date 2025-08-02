@@ -23,9 +23,14 @@ public class TranscriptionService {
     private final TranscriptionRepository transcriptRepository;
 
     public TranscriptResponseDTO generateTranscript(String language) {
-        String prompt = PromptUtils.getPrompt(PromptType.GENERATION_PROMPT, language);
-        String content = openAiClient.getCompletionOpenAi(prompt);
+        String transcriptPrompt = PromptUtils.getPrompt(PromptType.GENERATION_PROMPT, language);
+
+        String spaceFormattedPrompt = transcriptPrompt.replaceAll("\\s+", " ").trim();
+
+        String content = openAiClient.getCompletionOpenAi(spaceFormattedPrompt);
+
         Transcript transcript = createAndSaveTranscripts(content, language);
+
         return toTranscriptResponseDTO(transcript);
     }
 
@@ -38,8 +43,7 @@ public class TranscriptionService {
     }
 
     public Transcript getTranscriptById(Long id) {
-        return transcriptRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
+        return transcriptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
 
         //return new Transcript(transcript.getId(), transcript.getTranscriptText(), transcript.getLanguage(), transcript.getCreateDateTime());
     }
@@ -56,9 +60,7 @@ public class TranscriptionService {
             throw new EntityNotFoundException("No transcripts found.");
         }
 
-        return transcriptList.stream()
-                .map(this::toTranscriptResponseDTO)
-                .collect(Collectors.toList());
+        return transcriptList.stream().map(this::toTranscriptResponseDTO).collect(Collectors.toList());
     }
 
     public TranscriptResponseDTO toTranscriptResponseDTO(Transcript transcript) {

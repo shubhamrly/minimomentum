@@ -43,8 +43,9 @@ public class QuestionAnswerService {
                 getAllQAByTranscriptIdInternal(transcriptId),
                 question
         );
+        String spaceFormattedPrompt = promptWithHistory.replaceAll("\\s+", " ").trim();
 
-        String content = openAiClient.getCompletionOpenAi(promptWithHistory);
+        String content = openAiClient.getCompletionOpenAi(spaceFormattedPrompt);
         log.info(" QuestionAnswerService || Prompt length : {}  and response length {}", prompt.length(), content.length());
         return createAndSaveQuestionAnswer(transcriptId, question, content).getAnswer();
     }
