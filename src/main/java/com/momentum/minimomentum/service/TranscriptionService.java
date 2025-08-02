@@ -1,6 +1,5 @@
 package com.momentum.minimomentum.service;
 
-
 import com.momentum.minimomentum.constant.PromptType;
 import com.momentum.minimomentum.dto.responseDTO.TranscriptResponseDTO;
 import com.momentum.minimomentum.exception.EntityNotFoundException;
@@ -23,8 +22,6 @@ public class TranscriptionService {
 
     private final TranscriptionRepository transcriptRepository;
 
-
-
     public TranscriptResponseDTO generateTranscript(String language) {
         String prompt = PromptUtils.getPrompt(PromptType.GENERATION_PROMPT, language);
         String content = openAiClient.getCompletionOpenAi(prompt);
@@ -41,7 +38,9 @@ public class TranscriptionService {
     }
 
     public Transcript getTranscriptById(Long id) {
-       return  transcriptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
+        return transcriptRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
+
         //return new Transcript(transcript.getId(), transcript.getTranscriptText(), transcript.getLanguage(), transcript.getCreateDateTime());
     }
 
@@ -58,7 +57,7 @@ public class TranscriptionService {
         }
 
         return transcriptList.stream()
-                .map(t -> new TranscriptResponseDTO(t.getId(), t.getTranscriptText(), t.getLanguage(), t.getCreateDateTime()))
+                .map(this::toTranscriptResponseDTO)
                 .collect(Collectors.toList());
     }
 
@@ -71,6 +70,3 @@ public class TranscriptionService {
         return responseDto;
     }
 }
-
-
-

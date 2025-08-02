@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TranscriptQAResponseDTO{
+public class TranscriptQAResponseDTO {
 
     String id;
     String answer;

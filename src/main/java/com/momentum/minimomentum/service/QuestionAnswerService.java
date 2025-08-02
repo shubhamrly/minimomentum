@@ -55,7 +55,7 @@ public class QuestionAnswerService {
     }
 
     public List<TranscriptQAResponseDTO> getAllQAByTranscriptId(Long transcriptId) {
-        List<TranscriptQAResponseDTO> questionAnswers =  getAllQAByTranscriptIdInternal(transcriptId);
+        List<TranscriptQAResponseDTO> questionAnswers = getAllQAByTranscriptIdInternal(transcriptId);
         if (questionAnswers.isEmpty()) {
             log.info("No question answers found for transcriptId: {}", transcriptId);
             throw new EntityNotFoundException("No question answers found for transcriptId: " + transcriptId);
@@ -72,6 +72,7 @@ public class QuestionAnswerService {
         questionAnswer.setCreateDateTime(LocalDateTime.now());
         return questionAnswersRepository.save(questionAnswer);
     }
+
     public TranscriptQAResponseDTO toTranscriptQAResponseDTO(QuestionAnswer questionAnswer) {
         TranscriptQAResponseDTO responseDTO = new TranscriptQAResponseDTO();
         responseDTO.setId(String.valueOf(questionAnswer.getId()));
@@ -81,6 +82,7 @@ public class QuestionAnswerService {
         responseDTO.setCreateDateTime(questionAnswer.getCreateDateTime());
         return responseDTO;
     }
+
     public List<TranscriptQAResponseDTO> toTranscriptQAResponseDTOList(List<QuestionAnswer> questionAnswerList) {
         return questionAnswerList.stream()
                 .map(this::toTranscriptQAResponseDTO)

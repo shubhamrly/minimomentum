@@ -12,11 +12,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OpenAiClient {
 
-    private final  ChatClient chatClient;
+    private final ChatClient chatClient;
 
     @Value("${spring.ai.openai.temperature}")
     private double temperature;
-
 
     public String getCompletionOpenAi(String userPrompt) {
         return chatClient.prompt()

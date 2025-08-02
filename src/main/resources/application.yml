@@ -4,10 +4,12 @@ spring:
     driver-class-name: org.h2.Driver
     username: ${H2_USERNAME:sa}
     password: ${H2_PASSWORD:}
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
@@ -19,7 +21,5 @@ spring:
       enabled: true
       path: /h2-console
 
-
-
 server:
-  port: 8081
+  port: 8080

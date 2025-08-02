@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SummaryDetailsDTO {
+
     @JsonProperty("Tone")
     public String tone;
     @JsonProperty("Outcome")
@@ -33,11 +34,11 @@ public class SummaryDetailsDTO {
     public String customer;
 
     @Data
-    public static class ChurnRiskSignalsDTO{
+    public static class ChurnRiskSignalsDTO {
+
         @JsonProperty("RiskLevel")
         public String riskLevel;
         @JsonProperty("Signals")
         public List<String> signals;
     }
 }
-

@@ -22,7 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SummaryService {
 
-
     private final TranscriptionService generationService;
 
     private final OpenAiClient openAiClient;
@@ -46,7 +45,7 @@ public class SummaryService {
         String summaryText = wrapper.getSummary();
         SummaryDetails summaryDetails = toSummaryDetailsEntity(wrapper.getSummaryDetails());
 
-         Summary summaryObj = summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
+        Summary summaryObj = summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)
                 .map(existing -> {
                     existing.setSummaryText(summaryText);
                     existing.setSummaryDetails(summaryDetails);
@@ -63,8 +62,6 @@ public class SummaryService {
                 });
         return summaryRepository.save(summaryObj);
     }
-
-
 
     public SummaryResponseDTO getSummary(Long summaryId) {
         Summary summary = summaryRepository.findById(summaryId)
@@ -96,9 +93,10 @@ public class SummaryService {
 
     }
 
-
     private SummaryDetailsDTO toSummaryDetailsDto(SummaryDetails entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
 
         SummaryDetailsDTO summaryDetailsDto = new SummaryDetailsDTO();
         summaryDetailsDto.setTone(entity.getTone());
@@ -120,9 +118,10 @@ public class SummaryService {
         return summaryDetailsDto;
     }
 
-
     private SummaryDetails toSummaryDetailsEntity(SummaryDetailsDTO dto) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
 
         SummaryDetails entity = new SummaryDetails();
         entity.setTone(dto.getTone());

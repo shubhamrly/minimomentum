@@ -1,6 +1,7 @@
 package com.momentum.minimomentum.constant;
 
 public class PromptConstants {
+
     public static final String SYSTEM_CONTEXT_CONSTANT = """
                  You are an AI assistant for generating and analyzing sales call transcripts. Follow these rules:
                      1. Generate realistic mock sales call transcripts
@@ -79,6 +80,5 @@ public class PromptConstants {
              - Keep the response under 100 words always.
              - if language is provided answer the question in that, if the question is asked in that same language other than english,give priority to language of the question.
             """;
-
 
 }
