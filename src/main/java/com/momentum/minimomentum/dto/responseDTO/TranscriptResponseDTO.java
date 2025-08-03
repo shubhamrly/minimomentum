@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TranscriptResponseDTO {
 
-    private Long id;
+    private Long transcriptId;
 
     private String transcriptText;
 

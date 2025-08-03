@@ -117,7 +117,7 @@ public class TranscriptionService {
 
     public TranscriptResponseDTO toTranscriptResponseDTO(Transcript transcript) {
         TranscriptResponseDTO responseDto = new TranscriptResponseDTO();
-        responseDto.setId(transcript.getId());
+        responseDto.setTranscriptId(transcript.getId());
         responseDto.setTranscriptText(transcript.getTranscriptText());
         responseDto.setLanguage(transcript.getLanguage());
         responseDto.setCreateDateTime(transcript.getCreateDateTime());
