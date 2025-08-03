@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * Entity representing a question-answer pair related to a transcript.
- * Contains the question, answer, creation date-time, and a reference to the associated transcript.
+ * Entity representing a question-answer pair related to a transcript. Contains
+ * the question, answer, creation date-time, and a reference to the associated
+ * transcript.
  */
-
 @Data
 @Entity
 @Table(name = "question_answers")

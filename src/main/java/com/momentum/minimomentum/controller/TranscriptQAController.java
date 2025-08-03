@@ -27,7 +27,7 @@ public class TranscriptQAController {
      * Generates answers to questions based on the provided transcript ID.
      *
      * @param transcriptId the ID of the transcript to answer questions for
-     * @param question     the question to be answered
+     * @param question the question to be answered
      * @return a ResponseEntity containing the answer to the question
      */
     @Operation(
@@ -49,12 +49,15 @@ public class TranscriptQAController {
         return ResponseEntity.ok(response);
 
     }
+
     /**
-     * Retrieves all previously asked questions and their answers by transcriptId.
-     * Fetches all previously asked questions and their answers ordered by latest dateTime based on the provided transcript ID.
+     * Retrieves all previously asked questions and their answers by
+     * transcriptId. Fetches all previously asked questions and their answers
+     * ordered by latest dateTime based on the provided transcript ID.
      *
      * @param transcriptId the ID of the transcript to retrieve answers for
-     * @return a ResponseEntity containing a list of TranscriptQAResponseDTO with all questions and answers
+     * @return a ResponseEntity containing a list of TranscriptQAResponseDTO
+     * with all questions and answers
      */
     @Operation(
             summary = "Get all previously questions and their answers by transcriptId",
