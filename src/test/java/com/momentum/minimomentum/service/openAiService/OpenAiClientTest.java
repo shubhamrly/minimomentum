@@ -4,11 +4,12 @@ import com.momentum.minimomentum.constant.PromptConstants;
 import com.momentum.minimomentum.exception.OpenAiClientException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.ai.chat.client.ChatClient;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+
+/** AI Generated Code - Test skeleton structure **/
 
 class OpenAiClientTest {
 
@@ -22,10 +23,13 @@ class OpenAiClientTest {
     }
 
     @Test
-    void testGetCompletionOpenAi_Success() {
-        // Given
-        String prompt = "What is Java?";
-        String expectedResponse = "Java is a programming language.";
+    void given_validPrompt_when_getCompletion_then_returns200() {
+
+        String prompt = PromptConstants.QUESTION_ANSWER_PROMPT_CONSTANT
+                .replace("{transcriptId}", "1")
+                .replace("{question}", "What did customer say about sales product?");
+
+        String expectedResponse = "The customer, Mr. Johnson, was interested in the Inventory Management System offered by RetailTech Solutions.";
 
         when(chatClient.prompt()
                 .system(PromptConstants.SYSTEM_CONTEXT_CONSTANT)
@@ -33,25 +37,24 @@ class OpenAiClientTest {
                 .call()
                 .content()).thenReturn(expectedResponse);
 
-        // When
         String result = openAiClient.getCompletionOpenAi(prompt);
 
-        // Then
         assertEquals(expectedResponse, result);
     }
 
     @Test
-    void testGetCompletionOpenAi_ExceptionThrown() {
-        // Given
-        String prompt = "Something wrong";
+    void given_openAiDown_when_getCompletion_then_returns503() {
+        String prompt = PromptConstants.QUESTION_ANSWER_PROMPT_CONSTANT
+                .replace("{transcriptId}", "1")
+                .replace("{question}", "What did customer say about sales product?");
 
         when(chatClient.prompt()
                 .system(PromptConstants.SYSTEM_CONTEXT_CONSTANT)
                 .user(prompt)
                 .call()
-                .content()).thenThrow(new RuntimeException("Service unavailable"));
+                .content()).thenThrow(new OpenAiClientException("Service unavailable"));
 
-        // Then
+
         assertThrows(OpenAiClientException.class, () -> {
             openAiClient.getCompletionOpenAi(prompt);
         });

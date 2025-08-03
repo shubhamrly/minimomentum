@@ -5,22 +5,20 @@ import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.service.QuestionAnswerService;
 import com.momentum.minimomentum.service.TranscriptionService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Collections;
 import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+/** AI Generated Code - Test skeleton structure **/
+
 
 @WebMvcTest(TranscriptQAController.class)
 class TranscriptQAControllerTest {
@@ -35,25 +33,26 @@ class TranscriptQAControllerTest {
     private QuestionAnswerService questionAnswerService;
 
     @Test
-    void testGetAnswerByTranscriptId_Returns200() throws Exception {
+    void given_validTranscriptId_when_getAnswer_then_returns200() throws Exception {
         // Mock response
-        TranscriptQAResponseDTO mockResponse = new TranscriptQAResponseDTO();
-        mockResponse.setAnswer("This is a mock answer");
+        TranscriptQAResponseDTO mockQAResponse = new TranscriptQAResponseDTO();
+        mockQAResponse.setAnswer("The customer, Mr. Johnson, expressed interest in the Inventory Management System offered by RetailTech Solutions.");
 
         when(questionAnswerService.getAnswersByTranscriptId(eq(1L), any()))
-                .thenReturn("This is a mock answer");
+                .thenReturn("The customer, Mr. Johnson, expressed interest in the Inventory Management System offered by RetailTech Solutions.");
 
         mockMvc.perform(post("/api/v2/transcriptions/transcript/1/answer")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("What is CRM?"))
+                        .content("What did customer say about sales product?"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.answer").value("This is a mock answer"));
+                .andExpect(jsonPath("$.answer").value("The customer, Mr. Johnson, expressed interest in the Inventory Management System offered by RetailTech Solutions."));
+
     }
 
     @Test
-    void testGetAnswerByTranscriptId_Returns404() throws Exception {
+    void given_invalidTranscriptId_when_getAnswer_then_returns404() throws Exception {
         when(questionAnswerService.getAnswersByTranscriptId(eq(0L), any()))
-                .thenThrow(new EntityNotFoundException("Transcript not found"));
+                .thenThrow(new EntityNotFoundException("Transcript not found by id: 0"));
 
         when(transcriptionService.getTranscriptById(0L))
                 .thenThrow(new EntityNotFoundException("Transcript not found by id: 0"));
@@ -65,26 +64,27 @@ class TranscriptQAControllerTest {
     }
 
     @Test
-    void testGetAllAnswersByTranscriptId_Returns200() throws Exception {
-        TranscriptQAResponseDTO dto = new TranscriptQAResponseDTO();
-        dto.setAnswer("Answer 1");
-        List<TranscriptQAResponseDTO> list = List.of(dto);
+    void given_validTranscriptId_when_getAllAnswers_then_returns200() throws Exception {
+        TranscriptQAResponseDTO mockQAResponse = new TranscriptQAResponseDTO();
+        mockQAResponse.setAnswer("The customer, Mr. Johnson, expressed interest in the Inventory Management System");
+
+        List<TranscriptQAResponseDTO> list = List.of(mockQAResponse);
 
         when(questionAnswerService.getAllQAByTranscriptId(1L)).thenReturn(list);
 
         mockMvc.perform(get("/api/v2/transcriptions/transcript/1/answers"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].answer").value("Answer 1"));
+                .andExpect(jsonPath("$[0].answer").value("The customer, Mr. Johnson, expressed interest in the Inventory Management System"));
     }
 
     @Test
-    void testGetAllAnswersByTranscriptId_Returns404() throws Exception {
-        when(questionAnswerService.getAllQAByTranscriptId(1L))
+    void given_invalidTranscriptId_when_getAllAnswers_then_returns404() throws Exception {
+        when(questionAnswerService.getAllQAByTranscriptId(0L))
                 .thenThrow(new EntityNotFoundException("Transcript not found"));
-        when(transcriptionService.getTranscriptById(1L))
-                .thenThrow(new EntityNotFoundException("Transcript not found by id: 1"));
+        when(transcriptionService.getTranscriptById(0L))
+                .thenThrow(new EntityNotFoundException("Transcript not found by id: 0"));
 
-        mockMvc.perform(get("/api/v2/transcriptions/transcript/1/answers"))
+        mockMvc.perform(get("/api/v2/transcriptions/transcript/0/answers"))
                 .andExpect(status().isNotFound());
     }
 }
