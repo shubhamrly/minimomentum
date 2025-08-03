@@ -17,15 +17,17 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 
 public class SummariserController {
+
     private final String className = getClass().getSimpleName();
 
     private final SummaryService summaryService;
+
     /**
      * Generates a summary for the transcript by its ID and specified language.
      * If no language is provided, it defaults to English.
      *
      * @param transcriptId the ID of the transcript to summarize
-     * @param language     the language for the summary (default is "English")
+     * @param language the language for the summary (default is "English")
      * @return a ResponseEntity containing the generated summary
      * @throws JsonProcessingException if there is an error processing JSON
      */
@@ -40,9 +42,10 @@ public class SummariserController {
 
         return ResponseEntity.ok(summaryService.generateSummary(transcriptId, language));
     }
+
     /**
-     * Retrieves a summary by its ID.
-     * If the ID is not found in the database, it returns a 404 not found for that resource.
+     * Retrieves a summary by its ID. If the ID is not found in the database, it
+     * returns a 404 not found for that resource.
      *
      * @param summaryId the ID of the summary to retrieve
      * @return a ResponseEntity containing the summary if found
@@ -60,12 +63,11 @@ public class SummariserController {
     }
 
     /**
-     * Retrieves all generated summaries from the database.
-     * It returns a list of all summaries persisting in the database.
+     * Retrieves all generated summaries from the database. It returns a list of
+     * all summaries persisting in the database.
      *
      * @return a ResponseEntity containing a list of all summaries
      */
-
     @Operation(summary = "Get all the generated summaries ",
             description = "This endpoint retrieves all generated summaries from database. It returns a list of all summaries persisting in the database.")
     @GetMapping("/summaries")

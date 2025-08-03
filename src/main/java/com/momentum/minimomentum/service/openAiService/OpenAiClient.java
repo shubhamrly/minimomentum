@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
  * OpenAiClient is a service that interacts with the OpenAI API to get completions based on user prompts.
  * It uses the ChatClient to send prompts and receive responses.
  */
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -28,21 +27,21 @@ public class OpenAiClient {
     public String getCompletionOpenAi(String userPrompt) {
         LocalDateTime startTime = LocalDateTime.now();
 
-     try{
+        try {
 
-        String content = chatClient.prompt()
-                .system(PromptConstants.SYSTEM_CONTEXT_CONSTANT)
-                .user(userPrompt)
-                .call()
-                .content();
+            String content = chatClient.prompt()
+                    .system(PromptConstants.SYSTEM_CONTEXT_CONSTANT)
+                    .user(userPrompt)
+                    .call()
+                    .content();
 
-        LocalDateTime endTime = LocalDateTime.now();
+            LocalDateTime endTime = LocalDateTime.now();
 
-        log.debug("[{}] Time taken by open-ai: {}",getClass().getSimpleName(), Duration.between(endTime, startTime));
+            log.debug("[{}] Time taken by open-ai: {}", getClass().getSimpleName(), Duration.between(endTime, startTime));
 
-        return content;
+            return content;
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("[{}] Error while getting completion from OpenAI: {}", getClass().getSimpleName(), e.getMessage());
             throw new OpenAiClientException("Error while getting completion from OpenAI");
         }

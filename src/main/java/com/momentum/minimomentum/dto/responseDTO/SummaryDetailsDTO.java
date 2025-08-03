@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 /*
     * DTO for detailed summary information.
     * Contains various fields such as tone, outcome, strengths, improvements,

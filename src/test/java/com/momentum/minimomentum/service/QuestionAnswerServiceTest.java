@@ -15,8 +15,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/** AI Generated Code - Test skeleton structure **/
-
+/**
+ * AI Generated Code - Test skeleton structure *
+ */
 class QuestionAnswerServiceTest {
 
     @Mock
@@ -43,7 +44,7 @@ class QuestionAnswerServiceTest {
         String transcriptText = PromptConstants.QUESTION_ANSWER_PROMPT_CONSTANT
                 .replace("{transcriptId}", String.valueOf(transcriptId))
                 .replace("{question}", question);
-       
+
         String mockedAnswer = "The customer, Mr. Johnson, expressed interest in the Inventory Management System offered by RetailTech Solutions.";
 
         Transcript transcript = new Transcript();
@@ -80,7 +81,6 @@ class QuestionAnswerServiceTest {
         qa.setQuestion("What product customer was interested in?");
         qa.setAnswer("The customer was interested in the Inventory Management System by XYZ systems.");
         qa.setCreateDateTime(LocalDateTime.now());
-
 
         when(questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(transcriptId))
                 .thenReturn(List.of(qa));

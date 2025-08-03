@@ -23,39 +23,37 @@ public class TranscriptionController {
     private final TranscriptionService generationService;
 
     /**
-     * Generates a transcript based on the provided language.
-     * If no language is provided, it defaults to English.
+     * Generates a transcript based on the provided language. If no language is
+     * provided, it defaults to English.
      *
      * @param language the language for the transcript (default is "English")
      * @return a ResponseEntity containing the generated transcript
      */
-
     @Operation(summary = "Generate a transcript based on the provided language",
             description = "This endpoint generates a transcript in the specific language, defaults to English if provided none.")
 
     @PostMapping("/transcripts")
     public ResponseEntity<TranscriptResponseDTO> generateTranscript(@RequestParam(value = "language", defaultValue = "english") String language) {
 
-       log.info("[{}] Generating transcript in language: {}", className, language);
+        log.info("[{}] Generating transcript in language: {}", className, language);
 
         return ResponseEntity.ok(generationService.generateTranscript(language));
 
     }
 
     /**
-     * Retrieves a transcript by its ID.
-     * If the ID is not found in the database, it returns a 404 not found for that resource.
+     * Retrieves a transcript by its ID. If the ID is not found in the database,
+     * it returns a 404 not found for that resource.
      *
      * @param transcriptId the ID of the transcript to retrieve
      * @return a ResponseEntity containing the transcript if found
      */
-
     @Operation(summary = "Get a generated transcript by its ID",
             description = "This endpoint retrieves a transcript by its ID. If the ID is not found in database ,it returns a 404 not found for that resource.")
 
     @GetMapping("/transcripts/{transcriptId}")
     public ResponseEntity<TranscriptResponseDTO> getTranscriptById(@PathVariable Long transcriptId) {
-       log.info("[{}] Fetching transcript for ID: {}", className, transcriptId);
+        log.info("[{}] Fetching transcript for ID: {}", className, transcriptId);
         return ResponseEntity.ok(generationService.getTranscriptDtoById(transcriptId));
     }
 
@@ -64,7 +62,6 @@ public class TranscriptionController {
      *
      * @return a ResponseEntity containing a list of all transcripts
      */
-
     @Operation(summary = "Get all the generated transcripts",
             description = "This endpoint retrieves all generated transcripts. It returns a list of all transcripts in the database.")
 

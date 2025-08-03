@@ -1,6 +1,5 @@
 package com.momentum.minimomentum.constant;
 
-
 //This file contains constants for prompts used in the application.
 public class PromptConstants {
 
@@ -15,7 +14,6 @@ public class PromptConstants {
             """;
 
     //Prompts for generating sales call transcripts. Space sanitization will be in the service layer.
-
     public static final String GENERATION_PROMPT_CONSTANT = """
                 Generate a realistic sales call transcript between a <productName> software product (CRM, HRM, IMS,HM,etc) salesperson and a retail client.
                 - Include timestamps in [HH:MM:SS] <Person,company> format, maintain chronological order,

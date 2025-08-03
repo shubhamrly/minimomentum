@@ -9,8 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-/** AI Generated Code - Test skeleton structure **/
-
+/**
+ * AI Generated Code - Test skeleton structure *
+ */
 class OpenAiClientTest {
 
     private ChatClient chatClient;
@@ -53,7 +54,6 @@ class OpenAiClientTest {
                 .user(prompt)
                 .call()
                 .content()).thenThrow(new OpenAiClientException("Service unavailable"));
-
 
         assertThrows(OpenAiClientException.class, () -> {
             openAiClient.getCompletionOpenAi(prompt);

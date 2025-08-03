@@ -26,57 +26,65 @@ class TranscriptionServiceTest {
     @InjectMocks
     private TranscriptionService transcriptionService;
 
-    private AutoCloseable closeable;
-
     @BeforeEach
-    void setUp() {
-        closeable = MockitoAnnotations.openMocks(this);
+    void setup() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testGenerateTranscript_success() {
+    void givenValidTranscriptRequest_whenGenerateTranscript_thenReturnsTranscriptResponse() {
         // given
         String language = "English";
         String mockPrompt = PromptConstants.GENERATION_PROMPT_CONSTANT.replace("%s", language).replaceAll("\\s+", " ").trim();
-        String mockContent = "Sample transcript content";
+        String mockContent = "[00:00:01] Jenna L (Sales Agent - Tech Solutions): Hi, this is Jenna L from Tech Solutions. How are you doing today?\\n\\n[00:00:05] Mark T (Customer - Global Enterprises): Hi Jenna, I'm doing well";
         Transcript transcript = getMockTranscript(mockContent, language);
 
         when(openAiClient.getCompletionOpenAi(anyString())).thenReturn(mockContent);
         when(transcriptionRepository.save(any(Transcript.class))).thenReturn(transcript);
 
-        // when
-        TranscriptResponseDTO result = transcriptionService.generateTranscript(language);
+        TranscriptResponseDTO transcriptResponseDTO = transcriptionService.generateTranscript(language);
 
-        // then
-        assertNotNull(result);
-        assertEquals(language, result.getLanguage());
-        assertEquals(mockContent, result.getTranscriptText());
+        assertNotNull(transcriptResponseDTO);
+        assertEquals(language, transcriptResponseDTO.getLanguage());
+        assertEquals(mockContent, transcriptResponseDTO.getTranscriptText());
     }
 
     @Test
-    void testGetTranscriptById_success() {
-        Transcript transcript = getMockTranscript("Hello", "en");
+    void givenTranscriptExists_whenGetById_thenReturnTranscript() {
+        Transcript transcript = getMockTranscript("[00:00:01] Jenna L (Sales Agent - Tech Solutions): Hi, this is Jenna L from Tech Solutions. How are you doing today?\\n\\n[00:00:05] Mark T (Customer - Global Enterprises): Hi Jenna, I'm doing well", "english");
+
         when(transcriptionRepository.findById(1L)).thenReturn(Optional.of(transcript));
 
         Transcript result = transcriptionService.getTranscriptById(1L);
-
         assertNotNull(result);
-        assertEquals("en", result.getLanguage());
+
+        assertEquals("english", result.getLanguage());
     }
 
     @Test
-    void testGetTranscriptById_notFound() {
-        when(transcriptionRepository.findById(1L)).thenReturn(Optional.empty());
+    void givenTranscriptNotExist_whenGetById_thenThrowException() {
+        when(transcriptionRepository.findById(0L)).thenReturn(Optional.empty());
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
-                () -> transcriptionService.getTranscriptById(1L));
+                () -> transcriptionService.getTranscriptById(0L));
 
-        assertEquals("Transcript not found by id: 1", exception.getMessage());
+        assertEquals("Transcript not found by id: 0", exception.getMessage());
     }
 
     @Test
-    void testGetAllTranscripts_success() {
-        List<Transcript> transcripts = List.of(getMockTranscript("t1", "en"), getMockTranscript("t2", "fr"));
+    void givenTranscriptsExist_whenGetAll_thenReturnList() {
+        List<Transcript> transcripts = List.of(
+                getMockTranscript("""
+        [00:00:01] Jenna L (Sales Agent - Tech Solutions): Hi, this is Jenna L from Tech Solutions. How are you doing today?
+
+        [00:00:05] Mark T (Customer - Global Enterprises): Hi Jenna, I'm doing well
+        """, "english"),
+                getMockTranscript("""
+        [00:00:01] Javier R (Agente de Ventas - Software CRM): Hola, soy Javier R de CRM Soluciones. ¿Cómo está hoy?  
+
+        [00:00:05] Laura G (Cliente - Gerente Tienda ABC): Hola, Javier.
+        """, "spanish")
+        );
 
         when(transcriptionRepository.findAll()).thenReturn(transcripts);
 
@@ -86,7 +94,7 @@ class TranscriptionServiceTest {
     }
 
     @Test
-    void testGetAllTranscripts_empty() {
+    void givenNoTranscriptsExist_whenGetAll_thenThrowException() {
         when(transcriptionRepository.findAll()).thenReturn(Collections.emptyList());
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
@@ -95,10 +103,10 @@ class TranscriptionServiceTest {
         assertEquals("No transcripts found.", exception.getMessage());
     }
 
-    private Transcript getMockTranscript(String text, String lang) {
+    private Transcript getMockTranscript(String text, String language) {
         Transcript transcript = new Transcript();
         transcript.setId(1L);
-        transcript.setLanguage(lang);
+        transcript.setLanguage(language);
         transcript.setTranscriptText(text);
         transcript.setCreateDateTime(LocalDateTime.now());
         return transcript;

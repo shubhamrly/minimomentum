@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class OpenAiConfig {
+
     // Configuration for OpenAI Chat Client
     @Bean
     public ChatClient chatClient(ChatModel chatModel) {

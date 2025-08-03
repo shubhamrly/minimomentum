@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
  * It interacts with the OpenAI API to generate transcripts based on the provided language
  * and provides methods to retrieve, save, and convert transcripts to response DTOs.
  */
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,14 +30,12 @@ public class TranscriptionService {
     private final String className = getClass().getSimpleName();
 
     /**
-     * Generates a transcript based on the provided language.
-     * If no language is provided, it defaults to English.
+     * Generates a transcript based on the provided language. If no language is
+     * provided, it defaults to English.
      *
      * @param language the language for the transcript (default is "English")
      * @return a TranscriptResponseDTO containing the generated transcript
      */
-
-
     public TranscriptResponseDTO generateTranscript(String language) {
         String transcriptPrompt = PromptConstants.GENERATION_PROMPT_CONSTANT
                 .replace("%s", language)
@@ -54,11 +51,10 @@ public class TranscriptionService {
     /**
      * Creates and saves a transcript with the given content and language.
      *
-     * @param content  the content of the transcript
+     * @param content the content of the transcript
      * @param language the language of the transcript
      * @return the saved Transcript object
      */
-
     public Transcript createAndSaveTranscripts(String content, String language) {
         Transcript transcript = new Transcript();
         transcript.setLanguage(language);
@@ -69,20 +65,21 @@ public class TranscriptionService {
     }
 
     /**
-     * Retrieves a transcript by its ID.
-     * If the ID is not found in the database, it throws an EntityNotFoundException.
+     * Retrieves a transcript by its ID. If the ID is not found in the database,
+     * it throws an EntityNotFoundException.
      *
      * @param id the ID of the transcript to retrieve
      * @return the Transcript object if found
      */
-
     public Transcript getTranscriptById(Long id) {
         log.info("[{}] Fetching transcript by id: {}", className, id);
         return transcriptRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Transcript not found by id: " + id));
     }
+
     /**
-     * Retrieves a transcript by its ID and converts it to a TranscriptResponseDTO.
-     * If the ID is not found in the database, it throws an EntityNotFoundException.
+     * Retrieves a transcript by its ID and converts it to a
+     * TranscriptResponseDTO. If the ID is not found in the database, it throws
+     * an EntityNotFoundException.
      *
      * @param id the ID of the transcript to retrieve
      * @return a TranscriptResponseDTO containing the transcript details
@@ -92,9 +89,10 @@ public class TranscriptionService {
         Transcript transcript = getTranscriptById(id);
         return toTranscriptResponseDTO(transcript);
     }
+
     /**
-     * Retrieves all transcripts from the database.
-     * If no transcripts are found, it throws an EntityNotFoundException.
+     * Retrieves all transcripts from the database. If no transcripts are found,
+     * it throws an EntityNotFoundException.
      *
      * @return a list of TranscriptResponseDTO containing all transcripts
      */
@@ -108,6 +106,7 @@ public class TranscriptionService {
         log.info("[{}] Fetched {} transcripts", className, transcriptList.size());
         return transcriptList.stream().map(this::toTranscriptResponseDTO).collect(Collectors.toList());
     }
+
     /**
      * Converts a Transcript entity to a TranscriptResponseDTO.
      *

@@ -16,8 +16,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/** AI Generated Code - Test skeleton structure **/
-
+/**
+ * AI Generated Code - Test skeleton structure *
+ */
 @WebMvcTest(SummariserController.class)
 class SummariserControllerTest {
 
@@ -25,7 +26,7 @@ class SummariserControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private  SummaryService summaryService;
+    private SummaryService summaryService;
 
     private SummaryResponseDTO createMockResponse(Long id, String lang) {
 
@@ -41,7 +42,6 @@ class SummariserControllerTest {
         SummaryDetailsDTO.ChurnRiskSignalsDTO churnRisk = new SummaryDetailsDTO.ChurnRiskSignalsDTO();
         churnRisk.setRiskLevel("5");
         churnRisk.setSignals(List.of("Budget constraints", "Competitor interest"));
-
 
         SummaryDetailsDTO details = new SummaryDetailsDTO();
         details.setTone("Professional and informative");
@@ -63,8 +63,8 @@ class SummariserControllerTest {
         Mockito.when(summaryService.generateSummary(anyLong(), anyString())).thenReturn(response);
 
         mockMvc.perform(post("/api/v2/summariser/summaries")
-                        .param("transcriptId", "1")
-                        .param("language", "English"))
+                .param("transcriptId", "1")
+                .param("language", "English"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.summaryId").value(1))
                 .andExpect(jsonPath("$.summaryText").value("During the call, Jenna L from Tech Solutions engaged Mark T from Global Enterprises about their AI-driven HR software. Mark expressed interest yet raised concerns about switching costs, budget justification, and data security."))
@@ -88,7 +88,7 @@ class SummariserControllerTest {
         Mockito.when(summaryService.getSummary(999L)).thenThrow(new EntityNotFoundException("Summary not found by id: 999"));
 
         mockMvc.perform(get("/api/v2/summariser/summaries/999"))
-                 .andExpect(status().isNotFound())
+                .andExpect(status().isNotFound())
                 .andExpect(content().string("Summary not found by id: 999"));
     }
 

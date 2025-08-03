@@ -18,12 +18,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * SummaryService is responsible for generating and managing summaries of transcripts.
- * It interacts with the OpenAI API to generate summaries based on the transcript text
- * and provides methods to retrieve, save, and update summaries.
+ * SummaryService is responsible for generating and managing summaries of
+ * transcripts. It interacts with the OpenAI API to generate summaries based on
+ * the transcript text and provides methods to retrieve, save, and update
+ * summaries.
  */
-
-
 @Slf4j
 @Service
 @RequiredArgsConstructor

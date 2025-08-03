@@ -17,9 +17,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/** AI Generated Code - Test skeleton structure **/
-
-
+/**
+ * AI Generated Code - Test skeleton structure *
+ */
 @WebMvcTest(TranscriptQAController.class)
 class TranscriptQAControllerTest {
 
@@ -42,8 +42,8 @@ class TranscriptQAControllerTest {
                 .thenReturn("The customer, Mr. Johnson, expressed interest in the Inventory Management System offered by RetailTech Solutions.");
 
         mockMvc.perform(post("/api/v2/transcriptions/transcript/1/answer")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("What did customer say about sales product?"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("What did customer say about sales product?"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.answer").value("The customer, Mr. Johnson, expressed interest in the Inventory Management System offered by RetailTech Solutions."));
 
@@ -58,8 +58,8 @@ class TranscriptQAControllerTest {
                 .thenThrow(new EntityNotFoundException("Transcript not found by id: 0"));
 
         mockMvc.perform(post("/api/v2/transcriptions/transcript/0/answer")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("What is CRM?"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("What is CRM?"))
                 .andExpect(status().isNotFound());
     }
 

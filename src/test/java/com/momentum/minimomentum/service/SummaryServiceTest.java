@@ -73,15 +73,12 @@ class SummaryServiceTest {
         transcript.setId(transcriptId);
         transcript.setTranscriptText("[00:00:01] Javier R (Agente de Ventas - Software CRM): Hola, soy Javier R de CRM Soluciones. ¿Cómo está hoy?  \n[00:00:05] Laura G (Cliente - Gerente Tienda ABC): Hola, Javier. Estoy bien, gracias.");
 
-
         String expectedPrompt = PromptConstants.SUMMARY_PROMPT_CONSTANT.replace("%s", language).concat(transcript.getTranscriptText()).replaceAll("\\s+", " ").trim();
-
 
         String expectedSummaryText = "During the call, Jenna L from Tech Solutions engaged Mark T from Global Enterprises about their AI-driven HR software. Mark expressed interest yet raised concerns about switching costs, budget justification, and data security.";
         String expectedTone = "Professional and informative";
 
         String mockContent = getMockContent();
-
 
         SummaryDTO summaryDTO = new SummaryDTO();
         summaryDTO.setSummary(expectedSummaryText); // ✅ Correct value
@@ -89,16 +86,13 @@ class SummaryServiceTest {
         detailsDTO.setTone(expectedTone);
         summaryDTO.setSummaryDetails(detailsDTO);
 
-
         when(generationService.getTranscriptById(transcriptId)).thenReturn(transcript);
         when(openAiClient.getCompletionOpenAi(expectedPrompt)).thenReturn(mockContent);
         when(objectMapper.readValue(mockContent, SummaryDTO.class)).thenReturn(summaryDTO);
         when(summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)).thenReturn(Optional.empty());
         when(summaryRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
-
         SummaryResponseDTO response = summaryService.generateSummary(transcriptId, language);
-
 
         assertEquals(expectedSummaryText, response.getSummaryText());
         assertEquals(expectedTone, response.getSummaryDetails().getTone());
@@ -138,9 +132,9 @@ class SummaryServiceTest {
 
     @Test
     void givenTranscriptIdAndLanguage_whenGetSummary_thenThrowSummaryNotFoundException() {
-        when(summaryRepository.findById(99L)).thenReturn(Optional.empty());
+        when(summaryRepository.findById(101L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> summaryService.getSummary(99L));
+        assertThrows(EntityNotFoundException.class, () -> summaryService.getSummary(101L));
     }
 
     @Test
@@ -152,22 +146,12 @@ class SummaryServiceTest {
 
     @Test
     void givenTranscriptId_whenGetAllSummaries_thenReturnListOfSummaryResponseDTO() {
-        Summary summary = new Summary();
-        summary.setId(1L);
-        summary.setLanguage("English");
-        summary.setSummaryText("Summary");
-        SummaryDetails details = new SummaryDetails();
-        details.setTone("Excited");
-        summary.setSummaryDetails(details);
-        Transcript transcript = new Transcript();
-        transcript.setId(5L);
-        summary.setTranscript(transcript);
-
+        Summary summary = getSummary();
         when(summaryRepository.findAll()).thenReturn(List.of(summary));
 
         List<SummaryResponseDTO> list = summaryService.getAllSummaries();
 
         assertEquals(1, list.size());
-        assertEquals("Summary", list.get(0).getSummaryText());
+        assertEquals("During the call, Jenna L from Tech Solutions engaged Mark T from Global Enterprises about their AI-driven HR software. Mark expressed interest yet raised concerns about switching costs.", list.get(0).getSummaryText());
     }
 }

@@ -14,8 +14,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/** AI Generated Code - Test skeleton structure **/
-
+/**
+ * AI Generated Code - Test skeleton structure *
+ */
 @WebMvcTest(TranscriptionController.class)
 class TranscriptionControllerTest {
 
@@ -28,7 +29,7 @@ class TranscriptionControllerTest {
     private TranscriptResponseDTO mockTranscript(Long id, String language) {
         TranscriptResponseDTO transcriptResponseDto = new TranscriptResponseDTO();
         transcriptResponseDto.setTranscriptId(id);
-        if(language.equals("Spanish")) {
+        if (language.equals("Spanish")) {
             transcriptResponseDto.setTranscriptText("[00:00:01] Javier R (Agente de Ventas - Software CRM): Hola, soy Javier R de CRM Soluciones. ¿Cómo está hoy?  \n[00:00:05] Laura G (Cliente - Gerente Tienda ABC): Hola, Javier. Estoy bien, gracias.");
         } else {
             transcriptResponseDto.setTranscriptText("[00:00:01] Jenna L (Sales Agent - Tech Solutions): Hi, this is Jenna L from Tech Solutions. How are you doing today?\\n\\n[00:00:05] Mark T (Customer - Global Enterprises): Hi Jenna, I'm doing well, thanks. Just busy with the usual workload. What can I help you with?");
@@ -44,7 +45,7 @@ class TranscriptionControllerTest {
         Mockito.when(transcriptionService.generateTranscript(anyString())).thenReturn(mockTranscriptResponse);
 
         mockMvc.perform(post("/api/v2/transcriptions/transcripts")
-                        .param("language", "English"))
+                .param("language", "English"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.transcriptId").value(1))
                 .andExpect(jsonPath("$.language").value("English"));

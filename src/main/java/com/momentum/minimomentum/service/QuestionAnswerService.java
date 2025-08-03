@@ -18,7 +18,6 @@ import java.util.List;
  * It provides methods to generate answers based on transcripts, retrieve all Q&A pairs,
  * and save new question-answer pairs.
  */
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,16 +36,14 @@ public class QuestionAnswerService {
      * Generates answers to questions based on the provided transcript ID.
      *
      * @param transcriptId the ID of the transcript to answer questions for
-     * @param question     the question to be answered
+     * @param question the question to be answered
      * @return the answer to the question
      */
-
     public String getAnswersByTranscriptId(Long transcriptId, String question) {
 
         String sanitizedQuestion = question.replaceAll("[^a-zA-Z0-9,./?!\\s]", "");
 
         String transcriptText = generationService.getTranscriptById(transcriptId).getTranscriptText();
-
 
         String promptWithHistory = String.format("""
                         %s
@@ -62,19 +59,19 @@ public class QuestionAnswerService {
         ).replaceAll("\\s+", " ").trim();
         String content = openAiClient.getCompletionOpenAi(promptWithHistory);
 
-        log.info("[{}] Generated answer for sanitized question: {}", className , sanitizedQuestion);
+        log.info("[{}] Generated answer for sanitized question: {}", className, sanitizedQuestion);
 
         return createAndSaveQuestionAnswer(transcriptId, sanitizedQuestion, content).getAnswer();
     }
 
     /**
-     * Retrieves all previously asked questions and their answers by transcriptId.
-     * Fetches all previously asked questions and their answers ordered by latest dateTime based on the provided transcript ID.
+     * Retrieves all previously asked questions and their answers by
+     * transcriptId. Fetches all previously asked questions and their answers
+     * ordered by latest dateTime based on the provided transcript ID.
      *
      * @param transcriptId the ID of the transcript to retrieve answers for
      * @return a list of TranscriptQAResponseDTO with all questions and answers
      */
-
     public List<TranscriptQAResponseDTO> getAllQAByTranscriptIdInternal(Long transcriptId) {
 
         List<QuestionAnswer> questionAnswers = questionAnswersRepository.findByTranscriptIdOrderByCreateDateTimeDesc(transcriptId);
@@ -85,13 +82,13 @@ public class QuestionAnswerService {
     }
 
     /**
-     * Retrieves all previously asked questions and their answers by transcriptId.
-     * If no question answers are found, it throws an EntityNotFoundException.
+     * Retrieves all previously asked questions and their answers by
+     * transcriptId. If no question answers are found, it throws an
+     * EntityNotFoundException.
      *
      * @param transcriptId the ID of the transcript to retrieve answers for
      * @return a list of TranscriptQAResponseDTO with all questions and answers
      */
-
     public List<TranscriptQAResponseDTO> getAllQAByTranscriptId(Long transcriptId) {
         List<TranscriptQAResponseDTO> questionAnswers = getAllQAByTranscriptIdInternal(transcriptId);
         if (questionAnswers.isEmpty()) {
@@ -100,12 +97,15 @@ public class QuestionAnswerService {
         log.info("[{}] Returning {} question answers for transcriptId: {}", className, questionAnswers.size(), transcriptId);
         return questionAnswers;
     }
+
     /**
-     * Creates and saves a new question-answer pair associated with a transcript.
+     * Creates and saves a new question-answer pair associated with a
+     * transcript.
      *
-     * @param transcriptId the ID of the transcript to associate with the question-answer pair
-     * @param question     the question to be saved
-     * @param answer       the answer to be saved
+     * @param transcriptId the ID of the transcript to associate with the
+     * question-answer pair
+     * @param question the question to be saved
+     * @param answer the answer to be saved
      * @return the saved QuestionAnswer entity
      */
 
@@ -126,7 +126,6 @@ public class QuestionAnswerService {
      * @param questionAnswer the QuestionAnswer entity to convert
      * @return the converted TranscriptQAResponseDTO
      */
-
     public TranscriptQAResponseDTO toTranscriptQAResponseDTO(QuestionAnswer questionAnswer) {
         TranscriptQAResponseDTO responseDTO = new TranscriptQAResponseDTO();
         responseDTO.setId(String.valueOf(questionAnswer.getId()));
@@ -136,8 +135,10 @@ public class QuestionAnswerService {
         responseDTO.setCreateDateTime(questionAnswer.getCreateDateTime());
         return responseDTO;
     }
+
     /**
-     * Converts a list of QuestionAnswer entities to a list of TranscriptQAResponseDTO.
+     * Converts a list of QuestionAnswer entities to a list of
+     * TranscriptQAResponseDTO.
      *
      * @param questionAnswerList the list of QuestionAnswer entities to convert
      * @return a list of converted TranscriptQAResponseDTO
