@@ -14,12 +14,18 @@ import com.momentum.minimomentum.repository.SummaryRepository;
 import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 class SummaryServiceTest {
 
@@ -38,55 +44,86 @@ class SummaryServiceTest {
     @Mock
     private ObjectMapper objectMapper;
 
+    private static String getMockContent() {
+        final String summaryText = "During the call, Jenna L from Tech Solutions engaged Mark T from Global Enterprises about their AI-driven HR software. Mark expressed interest yet raised concerns about switching costs, budget justification, and data security.";
+        String tone = "Professional and informative";
+
+        return """
+                {
+                  "summary": "%s",
+                  "summaryDetails": {
+                    "tone": "%s"
+                  }
+                }
+                """.formatted(summaryText, tone);
+    }
+
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testGenerateSummary_whenTranscriptExists_thenReturnSummaryResponseDTO() throws JsonProcessingException {
-        // Arrange
+    void givenTranscriptExists_whenGenerateSummary_thenReturnSummaryResponseDTO() throws JsonProcessingException {
+
         Long transcriptId = 1L;
         String language = "English";
 
         Transcript transcript = new Transcript();
         transcript.setId(transcriptId);
-        transcript.setTranscriptText("This is a sample transcript.");
+        transcript.setTranscriptText("[00:00:01] Javier R (Agente de Ventas - Software CRM): Hola, soy Javier R de CRM Soluciones. ¿Cómo está hoy?  \n[00:00:05] Laura G (Cliente - Gerente Tienda ABC): Hola, Javier. Estoy bien, gracias.");
 
-        String expectedPrompt = PromptConstants.SUMMARY_PROMPT_CONSTANT
-                .replace("%s", language)
-                .concat(transcript.getTranscriptText())
-                .replaceAll("\\s+", " ").trim();
 
-        String aiResponse = "{\"summary\": \"This is the summary.\", \"summaryDetails\": {\"tone\": \"Positive\"}}";
+        String expectedPrompt = PromptConstants.SUMMARY_PROMPT_CONSTANT.replace("%s", language).concat(transcript.getTranscriptText()).replaceAll("\\s+", " ").trim();
+
+
+        String expectedSummaryText = "During the call, Jenna L from Tech Solutions engaged Mark T from Global Enterprises about their AI-driven HR software. Mark expressed interest yet raised concerns about switching costs, budget justification, and data security.";
+        String expectedTone = "Professional and informative";
+
+        String mockContent = getMockContent();
+
 
         SummaryDTO summaryDTO = new SummaryDTO();
-        summaryDTO.setSummary("This is the summary.");
+        summaryDTO.setSummary(expectedSummaryText); // ✅ Correct value
         SummaryDetailsDTO detailsDTO = new SummaryDetailsDTO();
-        detailsDTO.setTone("Positive");
+        detailsDTO.setTone(expectedTone);
         summaryDTO.setSummaryDetails(detailsDTO);
 
+
         when(generationService.getTranscriptById(transcriptId)).thenReturn(transcript);
-        when(openAiClient.getCompletionOpenAi(expectedPrompt)).thenReturn(aiResponse);
-        when(objectMapper.readValue(aiResponse, SummaryDTO.class)).thenReturn(summaryDTO);
+        when(openAiClient.getCompletionOpenAi(expectedPrompt)).thenReturn(mockContent);
+        when(objectMapper.readValue(mockContent, SummaryDTO.class)).thenReturn(summaryDTO);
         when(summaryRepository.findByTranscriptIdAndLanguage(transcriptId, language)).thenReturn(Optional.empty());
         when(summaryRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
-        // Act
+
         SummaryResponseDTO response = summaryService.generateSummary(transcriptId, language);
 
-        // Assert
-        assertEquals("This is the summary.", response.getSummaryText());
-        assertEquals("Positive", response.getSummaryDetails().getTone());
+
+        assertEquals(expectedSummaryText, response.getSummaryText());
+        assertEquals(expectedTone, response.getSummaryDetails().getTone());
         assertEquals(transcriptId.toString(), response.getTranscriptId());
         assertEquals(language, response.getLanguage());
     }
 
     @Test
-    void testGetSummary_whenExists_thenReturnDTO() {
+    void givenTranscriptIdAndLanguage_whenGetSummary_thenReturnSummaryResponseDTO() {
+        Summary summary = getSummary();
+
+        when(summaryRepository.findById(1L)).thenReturn(Optional.of(summary));
+
+        SummaryResponseDTO summaryResponseDto = summaryService.getSummary(1L);
+
+        assertEquals("During the call, Jenna L from Tech Solutions engaged Mark T from Global Enterprises about their AI-driven HR software. Mark expressed interest yet raised concerns about switching costs.", summaryResponseDto.getSummaryText());
+        assertEquals("Professional and informative", summaryResponseDto.getSummaryDetails().getTone());
+        assertEquals("English", summaryResponseDto.getLanguage());
+        assertEquals("10", summaryResponseDto.getTranscriptId());
+    }
+
+    private static Summary getSummary() {
         Summary summary = new Summary();
         summary.setId(1L);
-        summary.setSummaryText("Hello");
+        summary.setSummaryText("During the call, Jenna L from Tech Solutions engaged Mark T from Global Enterprises about their AI-driven HR software. Mark expressed interest yet raised concerns about switching costs.");
         summary.setLanguage("English");
 
         Transcript transcript = new Transcript();
@@ -94,35 +131,27 @@ class SummaryServiceTest {
         summary.setTranscript(transcript);
 
         SummaryDetails details = new SummaryDetails();
-        details.setTone("Neutral");
+        details.setTone("Professional and informative");
         summary.setSummaryDetails(details);
-
-        when(summaryRepository.findById(1L)).thenReturn(Optional.of(summary));
-
-        SummaryResponseDTO dto = summaryService.getSummary(1L);
-
-        assertEquals("Hello", dto.getSummaryText());
-        assertEquals("Neutral", dto.getSummaryDetails().getTone());
-        assertEquals("English", dto.getLanguage());
-        assertEquals("10", dto.getTranscriptId());
+        return summary;
     }
 
     @Test
-    void testGetSummary_whenNotFound_thenThrowException() {
+    void givenTranscriptIdAndLanguage_whenGetSummary_thenThrowSummaryNotFoundException() {
         when(summaryRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> summaryService.getSummary(99L));
     }
 
     @Test
-    void testGetAllSummaries_whenNone_thenThrowException() {
+    void givenTranscriptId_whenGetAllSummaries_thenThrowSummaryNotFoundException() {
         when(summaryRepository.findAll()).thenReturn(Collections.emptyList());
 
         assertThrows(EntityNotFoundException.class, () -> summaryService.getAllSummaries());
     }
 
     @Test
-    void testGetAllSummaries_whenExist_thenReturnList() {
+    void givenTranscriptId_whenGetAllSummaries_thenReturnListOfSummaryResponseDTO() {
         Summary summary = new Summary();
         summary.setId(1L);
         summary.setLanguage("English");
