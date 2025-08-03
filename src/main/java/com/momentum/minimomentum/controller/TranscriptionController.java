@@ -30,7 +30,8 @@ public class TranscriptionController {
      * @return a ResponseEntity containing the generated transcript
      */
     @Operation(summary = "Generate a transcript based on the provided language",
-            description = "This endpoint generates a transcript in the specific language, defaults to English if provided none.")
+            description = "This endpoint generates a transcript in the specific language," +
+                    " defaults to English if provided none.")
 
     @PostMapping("/transcripts")
     public ResponseEntity<TranscriptResponseDTO> generateTranscript(@RequestParam(value = "language", defaultValue = "english") String language) {
@@ -49,7 +50,9 @@ public class TranscriptionController {
      * @return a ResponseEntity containing the transcript if found
      */
     @Operation(summary = "Get a generated transcript by its ID",
-            description = "This endpoint retrieves a transcript by its ID. If the ID is not found in database ,it returns a 404 not found for that resource.")
+            description = "This endpoint retrieves a transcript by its ID. " +
+                    "If the ID is not found in database ," +
+                    "it returns a 404 not found for that resource.")
 
     @GetMapping("/transcripts/{transcriptId}")
     public ResponseEntity<TranscriptResponseDTO> getTranscriptById(@PathVariable Long transcriptId) {
@@ -63,7 +66,8 @@ public class TranscriptionController {
      * @return a ResponseEntity containing a list of all transcripts
      */
     @Operation(summary = "Get all the generated transcripts",
-            description = "This endpoint retrieves all generated transcripts. It returns a list of all transcripts in the database.")
+            description = "This endpoint retrieves all generated transcripts. " +
+                    "It returns a list of all transcripts in the database.")
 
     @GetMapping("/transcripts")
     public ResponseEntity<List<TranscriptResponseDTO>> getAllTranscripts() {

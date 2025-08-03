@@ -33,7 +33,8 @@ public class SummariserController {
      */
 
     @Operation(summary = "Generate a summary of the transcript by its transcript ID and specified language",
-            description = "This endpoint generates a summary for the transcript by its transcriptID. If no language is provided, it defaults to English.")
+            description = "This endpoint generates a summary for the transcript by its transcriptID. " +
+                    "If no language is provided, it defaults to English.")
 
     @PostMapping("/summaries")
     public ResponseEntity<SummaryResponseDTO> getSummary(@RequestParam Long transcriptId, @RequestParam(value = "language", defaultValue = "english") String language) throws JsonProcessingException {
@@ -51,7 +52,8 @@ public class SummariserController {
      * @return a ResponseEntity containing the summary if found
      */
     @Operation(summary = "Get a generated summary from db by its ID",
-            description = "This endpoint retrieves a summary by its ID. If the ID is not found in the database, it returns a 404 not found for that resource.")
+            description = "This endpoint retrieves a summary by its ID. " +
+                    "If the ID is not found in the database, it returns a 404 not found for that resource.")
 
     @GetMapping("/summaries/{summaryId}")
     public ResponseEntity<?> getSummaryById(@PathVariable Long summaryId) {
@@ -69,7 +71,8 @@ public class SummariserController {
      * @return a ResponseEntity containing a list of all summaries
      */
     @Operation(summary = "Get all the generated summaries ",
-            description = "This endpoint retrieves all generated summaries from database. It returns a list of all summaries persisting in the database.")
+            description = "This endpoint retrieves all generated summaries from database." +
+                    " It returns a list of all summaries persisting in the database.")
     @GetMapping("/summaries")
     public ResponseEntity<?> getAllSummaries() {
 

@@ -61,7 +61,8 @@ public class TranscriptQAController {
      */
     @Operation(
             summary = "Get all previously questions and their answers by transcriptId",
-            description = "Fetches all previously asked questions and their answers ordered By Latest DateTime based on the provided transcript ID"
+            description = "Fetches all previously asked questions and their answers ordered By Latest DateTime " +
+                    "based on the provided transcript ID"
     )
     @GetMapping("/transcript/{transcriptId}/answers")
     public ResponseEntity<List<TranscriptQAResponseDTO>> getAllAnswersByTranscriptId(@PathVariable Long transcriptId) {
