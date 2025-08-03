@@ -21,9 +21,6 @@ public class OpenAiClient {
 
     private final ChatClient chatClient;
 
-    @Value("${spring.ai.openai.temperature}")
-    private double temperature;
-
     public String getCompletionOpenAi(String userPrompt) {
         LocalDateTime startTime = LocalDateTime.now();
 
