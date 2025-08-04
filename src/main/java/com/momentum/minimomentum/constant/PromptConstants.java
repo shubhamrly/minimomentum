@@ -15,10 +15,11 @@ public class PromptConstants {
 
     //Prompts for generating sales call transcripts. Space sanitization will be in the service layer.
     public static final String GENERATION_PROMPT_CONSTANT = """
-                Generate a realistic sales call transcript between a <productName> software product (CRM, HRM, IMS,HM,etc) salesperson and a retail client.
+                Generate a realistic sales call transcript between a <productName> software product (Domain: CRM, HRM, IMS,HM,etc) salesperson and a retail client.
                 - Include timestamps in [HH:MM:SS] <Person,company> format, maintain chronological order,
                 - include any product,service, use natural flow, let speaker have doubts, intersets,objections.
                 - the conversation ends naturally, complete the transcript in 12-15 lines (6–8 per person).
+                - makeup  a realistic and brand-like <productName> and use it naturally in the conversation.
                 - Language: %s
                  Transcript formatting example:
                 [00:01:23] Thalia M  (Sales Agent - ABC Corp): Hi, this is Thalia M from ABC Corp. How are you today?

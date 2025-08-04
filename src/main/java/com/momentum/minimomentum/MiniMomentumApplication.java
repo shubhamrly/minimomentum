@@ -9,9 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @OpenAPIDefinition(
         info = @Info(title = "MiniMomentum-Assignment", version = "v2"),
         tags = {
-            @Tag(name = "1. Transcription", description = "Transcript APIs"),
-            @Tag(name = "2. Summariser", description = "Summary APIs"),
-            @Tag(name = "3. Question Answer", description = "Question Answer APIs")
+            @Tag(name = "Transcription", description = "Transcript APIs"),
+            @Tag(name = "Summariser", description = "Summary APIs"),
+            @Tag(name = "Question Answer", description = "Question Answer APIs")
         }
 )
 @SpringBootApplication

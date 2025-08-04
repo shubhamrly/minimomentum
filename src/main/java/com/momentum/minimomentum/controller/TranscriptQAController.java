@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "3. Question Answer", description = "Question Answer APIs")
+@Tag(name = "Question Answer", description = "Question Answer APIs")
 @Slf4j
 @RestController
 @RequestMapping("/api/v2/transcriptions")
