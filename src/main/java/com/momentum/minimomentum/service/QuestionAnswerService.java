@@ -45,8 +45,10 @@ public class QuestionAnswerService {
      */
     public String getAnswersByTranscriptId(Long transcriptId, String question) {
 
-        String sanitizedQuestion = question.replaceAll("[^a-zA-Z0-9,./?!\\s]", "");
-
+        String sanitizedQuestion = question.replaceAll("[^a-zA-Z0-9,./?!\\s]", "").trim();
+        if (sanitizedQuestion.isEmpty() || sanitizedQuestion.matches("[,./?!\\s]*")) {
+            throw new IllegalArgumentException("Please enter a valid question.");
+        }
         String transcriptText = generationService.getTranscriptById(transcriptId).getTranscriptText();
 
         String promptWithHistory = String.format("""
