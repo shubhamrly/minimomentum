@@ -160,9 +160,9 @@ Value : {project-key}
 
 -  use `mvn test` for testing
 
-- server will avaialble on `localhost:8080`
+- server will be available on `localhost:8080`
 
-- swagger will be avaiable on  `http://localhost:8080/swagger-ui/index.html`
+- swagger will be available on  `http://localhost:8080/swagger-ui/index.html`
 
 - H2 database will be available at `http://localhost:8080/h2-console`
 
