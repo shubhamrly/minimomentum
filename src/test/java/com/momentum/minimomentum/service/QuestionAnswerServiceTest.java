@@ -7,6 +7,7 @@ import com.momentum.minimomentum.model.QuestionAnswer;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.QuestionAnswersRepository;
 import com.momentum.minimomentum.service.openAiService.OpenAiClient;
+import com.momentum.minimomentum.repository.TranscriptionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -31,6 +32,9 @@ class QuestionAnswerServiceTest {
 
     @InjectMocks
     private QuestionAnswerService questionAnswerService;
+
+    @Mock
+    private TranscriptionRepository transcriptRepository;
 
     @BeforeEach
     void setUp() {
@@ -70,8 +74,9 @@ class QuestionAnswerServiceTest {
 
     @Test
     void givenTranscriptIdWithAnswers_whenGetAllQA_thenReturnList() {
-
         Long transcriptId = 1L;
+
+        when(transcriptRepository.existsById(transcriptId)).thenReturn(true);
 
         Transcript transcript = new Transcript();
         transcript.setId(transcriptId);

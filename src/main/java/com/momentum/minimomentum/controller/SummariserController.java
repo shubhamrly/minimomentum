@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@Tag(name = "2. Summariser", description = "Summary APIs")
+@Tag(name = "Summariser", description = "Summary APIs")
 @RestController
 @RequestMapping("/api/v2/summariser")
 @RequiredArgsConstructor

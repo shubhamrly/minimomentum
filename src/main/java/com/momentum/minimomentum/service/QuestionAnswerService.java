@@ -6,6 +6,7 @@ import com.momentum.minimomentum.exception.EntityNotFoundException;
 import com.momentum.minimomentum.model.QuestionAnswer;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.QuestionAnswersRepository;
+import com.momentum.minimomentum.repository.TranscriptionRepository;
 import com.momentum.minimomentum.service.openAiService.OpenAiClient;
 import jakarta.persistence.Converts;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ public class QuestionAnswerService {
     private final QuestionAnswersRepository questionAnswersRepository;
 
     private final OpenAiClient openAiClient;
+
+    private final TranscriptionRepository transcriptRepository;
 
     private final String className = getClass().getSimpleName();
 
@@ -91,7 +94,14 @@ public class QuestionAnswerService {
      * @return a list of TranscriptQAResponseDTO with all questions and answers
      */
     public List<TranscriptQAResponseDTO> getAllQAByTranscriptId(Long transcriptId) {
+
+        if (!transcriptRepository.existsById(transcriptId)) {
+            throw new EntityNotFoundException("Transcript not found for ID: " + transcriptId);
+        }
+
         List<TranscriptQAResponseDTO> questionAnswers = getAllQAByTranscriptIdInternal(transcriptId);
+
+
         if (questionAnswers.isEmpty()) {
             throw new EntityNotFoundException("No question answers found for transcriptId: " + transcriptId);
         }

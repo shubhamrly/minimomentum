@@ -1,0 +1,55 @@
+### Create Transcript
+POST http://localhost:8080/api/v2/transcriptions/transcripts?language={{language}}
+Accept: */*
+Content-Type: application/json
+
+###
+
+### Get All Transcripts
+GET http://localhost:8080/api/v2/transcriptions/transcripts
+Accept: */*
+
+###
+
+### Get Transcript by ID
+GET http://localhost:8080/api/v2/transcriptions/transcripts/{{transcriptId}}
+Accept: */*
+
+###
+
+### Create Summary for Transcript
+POST http://localhost:8080/api/v2/summariser/summaries?transcriptId={{transcriptId}}&language={{language}}
+Accept: */*
+Content-Type: application/json
+
+###
+
+### Get All Summaries
+GET http://localhost:8080/api/v2/summariser/summaries
+Accept: */*
+
+###
+
+### Get Summary by ID
+GET http://localhost:8080/api/v2/summariser/summaries/{{summaryId}}
+Accept: */*
+
+###
+
+### Get All Q&A for Transcript
+GET http://localhost:8080/api/v2/transcriptions/transcript/{{transcriptId}}/answers
+Accept: */*
+
+###
+
+### Ask Question on Transcript
+POST http://localhost:8080/api/v2/transcriptions/transcript/{{transcriptId}}/answer
+Accept: */*
+Content-Type: application/json
+
+{
+  "question": "What product was the customer interested in?"
+}
+
+
+GET http://localhost:8080/api/v2/transcriptions/transcripts
