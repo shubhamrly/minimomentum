@@ -18,7 +18,7 @@ Summarizes, ask questions from a transcript.
 ## Thought Process
 ## Approach
 
-### 1. Initial Planning
+### Initial Planning
 Broke down the assignment into three core functional modules:
   1. Transcript Generation Module – generates transcripts using OpenAI client.
   2. Summarization Module – Summarises the transcript using the OpenAI client.
@@ -32,7 +32,7 @@ Broke down the assignment into three core functional modules:
 - The PromptConstants contain the System and user prompts for each module.
 - Caveat: OpenAI's Chat Completion API is stateless ,therefore each request goes with System and user prompt.
 ---
-### 2. Transcript Generation
+### 1. Transcript Generation
 - Used OpenAI Chat Completion API for generating transcript content,
 - Since the Completion API is stateless, unique ID generation was handled internally using database primary keys.
 - The language of the generated transcript is set to English by default, but can be customized via the `language` parameter in the request.
@@ -43,7 +43,7 @@ Broke down the assignment into three core functional modules:
 
 ---
 
-### 3. Summarization Logic
+### 2. Summarization Logic
 - Reviewed `Momentum.io` summary styles and focused on:
   - `Action items`
   - `Pipeline risk`
@@ -71,23 +71,23 @@ Broke down the assignment into three core functional modules:
 
 ---
 
-### 4. Question Answering
+### 3. Question Answering
 - Used OpenAI Chat Completion API to generate answers for questions asked in the context to transcripts.
 - The prompt for QA included, UserPrompt + Context (Transcript + Previous Q&A history) to keep the Completion API in context.
 - The response to end user is given as: Answer: {Returned response from OpenAI}
 - Internally all the QA are joined by its transcript ID and stored in the database.
 - The question and answer language can be dynamically set via asking in that language or adding "respond in {lang} language" to the question.
 
-- **Persistence:**
+## Persistence:
 - All services have operated with entity via hibernate(JPA).
 - For the persistence-file-based database, H2 embedded was the winning choice. 
-- The database is at  `/data` directory within the application for file-level access.
+- The database is at  `/data` directory within the application.
 - The Relationship between Transcript to Summary and Question answer was `One-to-Many`.
 - The summary is linked to the `Transcript` entity via a foreign key.
 - The `QuestionAnswer` entity is linked to the `Transcript` entity via a foreign key.
 
 **Average Response Time (Open AI):**
--Model- Independent
+-Model- gpt-3.5-turbo, gpt-4o
 - Transcript Generation: ~7–12 seconds
 - Summarization: ~5–7 seconds
 - Question Answering: ~1–3 seconds
@@ -111,6 +111,7 @@ Broke down the assignment into three core functional modules:
 
 **AI assistance:**
 --Chatgpt for suggestion
+--IDE suggestions.
 
 ---
 
@@ -158,6 +159,7 @@ Value : {project-key}
 -- use `mvn test` for testing
 
 --server will avaialble on `localhost:8080`
+--swagger will be avaiable on  `http://localhost:8080/swagger-ui/index.html`
 
 --H2 database will be available at `http://localhost:8080/h2-console`
 
@@ -168,6 +170,7 @@ Value : {project-key}
 - <a href="https://platform.openai.com/docs/api-reference/chat/create">OpenAI API Reference</a>
 - <a href ="https://docs.spring.io/spring-ai/reference/getting-started.html"> Spring AI Documentation</a>
 - <a href="https://spring.io/guides/gs/testing-web">Spring Testing Guide</a>
+- <a href="https://github.com/Louis3797/awesome-readme-template/blob/main/SLIMMED-README-WITHOUT-EMOJI.md"> Readme Template</a>
 
 
 ## AI-usage
