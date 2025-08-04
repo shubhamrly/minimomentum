@@ -87,7 +87,8 @@ Broke down the assignment into three core functional modules:
 - The `QuestionAnswer` entity is linked to the `Transcript` entity via a foreign key.
 
 **Average Response Time (Open AI):**
--Model- gpt-3.5-turbo, gpt-4o
+
+- Model: gpt-3.5-turbo, gpt-4o
 - Transcript Generation: ~7–12 seconds
 - Summarization: ~5–7 seconds
 - Question Answering: ~1–3 seconds
@@ -110,8 +111,9 @@ Broke down the assignment into three core functional modules:
 - Mockito
 
 **AI assistance:**
---Chatgpt for suggestion
---IDE suggestions.
+
+- Chatgpt for suggestion
+- IDE suggestions.
 
 ---
 
@@ -153,15 +155,16 @@ Key: OPENAI_API_KEY
     
 Value : {project-key}
 ```
--- then `mvn spring-boot:run` OR run button
+-  then `mvn spring-boot:run` OR run button
 
 
--- use `mvn test` for testing
+-  use `mvn test` for testing
 
---server will avaialble on `localhost:8080`
---swagger will be avaiable on  `http://localhost:8080/swagger-ui/index.html`
+- server will avaialble on `localhost:8080`
 
---H2 database will be available at `http://localhost:8080/h2-console`
+- swagger will be avaiable on  `http://localhost:8080/swagger-ui/index.html`
+
+- H2 database will be available at `http://localhost:8080/h2-console`
 
 
 ## Resources used
@@ -181,4 +184,4 @@ Value : {project-key}
 - The AI-generated content has been marked with /** AI-Generated** /
 
 # Sample Curl request
-- refer to the file at parent level 'request.HTTP' for sample curl request.
+- refer to the file at parent level 'request.HTTP' for api requests.
