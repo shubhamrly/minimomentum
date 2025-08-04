@@ -96,6 +96,7 @@ public class SummaryService {
                 .toList();
     }
 
+    /** AI Generated- IDE Suggestion **/
     private SummaryResponseDTO convertToSummaryResponseDTO(Summary summary) {
 
         SummaryDetailsDTO summaryDetailsDTO = toSummaryDetailsDto(summary.getSummaryDetails());
@@ -109,7 +110,7 @@ public class SummaryService {
         );
 
     }
-
+    /** AI Generated- IDE Suggestion **/
     private SummaryDetailsDTO toSummaryDetailsDto(SummaryDetails summaryDetailsEntity) {
         if (summaryDetailsEntity == null) {
             return null;
@@ -134,7 +135,7 @@ public class SummaryService {
 
         return summaryDetailsDto;
     }
-
+    /** AI Generated- IDE Suggestion **/
     private SummaryDetails toSummaryDetailsEntity(SummaryDetailsDTO summaryDetailsDto) {
         if (summaryDetailsDto == null) {
             return null;

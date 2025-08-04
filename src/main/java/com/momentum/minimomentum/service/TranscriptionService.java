@@ -113,7 +113,7 @@ public class TranscriptionService {
      * @param transcript the Transcript entity to convert
      * @return a TranscriptResponseDTO containing the transcript details
      */
-
+    /** AI Generated- IDE Suggestion **/
     public TranscriptResponseDTO toTranscriptResponseDTO(Transcript transcript) {
         TranscriptResponseDTO responseDto = new TranscriptResponseDTO();
         responseDto.setTranscriptId(transcript.getId());

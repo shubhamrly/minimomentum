@@ -7,6 +7,7 @@ import com.momentum.minimomentum.model.QuestionAnswer;
 import com.momentum.minimomentum.model.Transcript;
 import com.momentum.minimomentum.repository.QuestionAnswersRepository;
 import com.momentum.minimomentum.service.openAiService.OpenAiClient;
+import jakarta.persistence.Converts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -120,7 +121,7 @@ public class QuestionAnswerService {
         return questionAnswersRepository.save(questionAnswer);
     }
 
-    /**
+    /** AI Generated-IDE Suggestion
      * Converts a QuestionAnswer entity to a TranscriptQAResponseDTO.
      *
      * @param questionAnswer the QuestionAnswer entity to convert
